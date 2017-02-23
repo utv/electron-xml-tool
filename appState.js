@@ -1,7 +1,7 @@
 let appState = {
   dir: '',
-  fileType: '',
   sectionHtml: ''
 }
 
+// exupdateState
 export default appState

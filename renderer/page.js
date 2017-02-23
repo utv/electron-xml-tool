@@ -1,3 +1,5 @@
+import fs from 'fs'
+
 export function loadPage(pathToLoad, targetEle) {
   const pageEle = fs.readFileSync(pathToLoad)
   // remove children

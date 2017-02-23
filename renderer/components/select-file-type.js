@@ -1,28 +1,23 @@
 
-import { resolve } from 'path'
+import path from 'path'
+import { loadPage } from '../page.js'
 import { readFileSync } from 'fs'
+import appState from '../../appState.js'
 
-function createOption(parent, inner, value) {
-  let optionEle = document.createElement('option')
-  optionEle.setAttribute('value', value)
-  optionEle.innerHTML = inner
-  parent.appendChild(optionEle)
-}
 
-function createFileSelect() {
-  let fileTypeEle = document.getElementsByClassName('file-type')[0]
+export function createFileSelect() {
+  let selectEle = document.getElementsByClassName('file-type')[0]
   const fileTypes = ['xml', 'json', 'sql']
-  createOption(fileTypeEle, 'Select one', 'nothing')
   for (let eachType of fileTypes) {
-    let pathToLoad = resolve(__dirname, './components', eachType, '.html')
-    createOption(fileTypeEle, eachType, pathToLoad)
+    let optionEle = document.createElement('option')
+    optionEle.setAttribute('value', path.resolve(__dirname, eachType + '.html'))
+    optionEle.innerHTML = eachType
+    selectEle.appendChild(optionEle)
   }
 
-  fileTypeEle.addEventListener('change', () => {
-
+  document.getElementsByClassName('file-type')[0].addEventListener('change', (event) => {
+    loadPage(event.target.value, document.getElementsByClassName('task')[0])
+    appState['fileType'] = event.target[event.target.selectedIndex].innerHTML
+    console.log(appState)
   })
 }
-
-
-
-

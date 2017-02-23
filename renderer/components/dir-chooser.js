@@ -1,7 +1,9 @@
+import electron from 'electron'
 
-function createDirChooser() {
-  let dirChooserEle = document.getElementsByClassName('dir-chooser')[0]
-  dirChooserEle.addEventListener('change', (event) => {
-    console.log(event.target.value)
+export function createDirChooser() {
+  document.getElementsByClassName('dir-chooser')[0].addEventListener('click', () => {
+    electron.remote.dialog.showOpenDialog({ properties: ['openDirectory'] }, (filenames) => {
+      document.getElementsByTagName('strong')[0].innerHTML = filenames[0]
+    })
   })
 }
