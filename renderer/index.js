@@ -7,13 +7,13 @@ for (let link of links) {
   link.addEventListener('click', (event) => {
     event.preventDefault()
     let page = event.target.getAttribute('href')
-    const pathToLoad = path.resolve(__dirname, '../components', page)
+    const pathToLoad = path.resolve(__dirname, './components', page)
     let targetEle = document.getElementsByClassName('task')[0]
     loadPage(pathToLoad, targetEle)
   })
 }
 
-function loadPage (pathToLoad, targetEle) {
+function loadPage(pathToLoad, targetEle) {
   const pageEle = fs.readFileSync(pathToLoad)
   // remove children
   while (targetEle.firstChild) {
