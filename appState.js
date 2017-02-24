@@ -1,6 +1,6 @@
 let appState = {
-  dir: '',
-  sectionHtml: ''
+  // dir: '',
+  // sectionHtml: ''
 }
 
 // exupdateState

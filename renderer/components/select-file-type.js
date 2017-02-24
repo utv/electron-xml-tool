@@ -1,26 +1,48 @@
 
-import path from 'path'
-import { loadPage } from '../page.js'
-import { readFileSync } from 'fs'
 import appState from '../../appState.js'
+import { createFileExplorer } from './file-explorer.js'
 
 
-export function createFileSelect() {
+/*let fileSelectEle = {
+  ele: document.getElementsByClassName('file-type')[0],
+  fileTypes: ['Select One', 'xml', 'json', 'sql'],
+  createUI: function () {
+    for (let eachType of this.fileTypes) {
+      let optionEle = document.createElement('option')
+      optionEle.setAttribute('value', eachType)
+      optionEle.innerHTML = eachType
+      this.ele.appendChild(optionEle)
+    }
+  }
+}
+
+fileSelectEle.ele.addEventListener('change', (event) => {
+  if (event.target[event.target.selectedIndex].innerHTML === 'Select One')
+    return
+
+  appState['fileType'] = event.target[event.target.selectedIndex].innerHTML
+  console.log(appState)
+  createFileExplorer(appState['fileType'])
+})
+
+export default fileSelectEle*/
+
+export function createFileSelect(dir) {
   let selectEle = document.getElementsByClassName('file-type')[0]
   const fileTypes = ['Select One', 'xml', 'json', 'sql']
   for (let eachType of fileTypes) {
     let optionEle = document.createElement('option')
-    optionEle.setAttribute('value', path.resolve(__dirname, eachType + '.html'))
+    optionEle.setAttribute('value', eachType)
     optionEle.innerHTML = eachType
     selectEle.appendChild(optionEle)
   }
 
-  document.getElementsByClassName('file-type')[0].addEventListener('change', (event) => {
+  selectEle.addEventListener('change', (event) => {
     if (event.target[event.target.selectedIndex].innerHTML === 'Select One')
       return
 
-    loadPage(event.target.value, document.getElementsByClassName('task')[0])
-    appState['fileType'] = event.target[event.target.selectedIndex].innerHTML
-    console.log(appState)
+    let fileType = event.target[event.target.selectedIndex].innerHTML
+    console.log(fileType)
+    createFileExplorer(dir, fileType)
   })
 }

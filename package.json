@@ -10,7 +10,9 @@
   "author": "utv",
   "license": "ISC",
   "dependencies": {
-    "bootstrap": "^3.3.7"
+    "bootstrap": "^3.3.7",
+    "findit": "^2.0.0",
+    "xml2js": "^0.4.17"
   },
   "devDependencies": {
     "electron-prebuilt-compile": "^1.4.15",

@@ -1,3 +1,7 @@
-.file-list {
+.file-explorer {
   border: dotted
+}
+
+.result-panel {
+  border: lightseagreen
 }
