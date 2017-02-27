@@ -46,6 +46,7 @@ export function createFileExplorer(dir, fileType) {
 
   createFileList(fileExplorerEle, dir, fileType)
   fileExplorerEle.addEventListener('change', (event) => {
+    let file = event.target[event.target.selectedIndex]
 
   })
 }
