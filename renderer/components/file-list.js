@@ -16,13 +16,13 @@ function addToOption(file, fileType, callback) {
   }
 }
 
-function createFileList(fileExplorerEle, dir, fileType) {
+function createFileListOption(fileList, dir, fileType) {
   console.log('createFileList')
   let optionEle = document.createElement('option')
 
   optionEle.setAttribute('value', 'Select One')
   optionEle.innerHTML = path.basename('Select One')
-  fileExplorerEle.appendChild(optionEle)
+  fileList.appendChild(optionEle)
   // add new children
   if (fileType === 'xml') {
     let finder = require('findit')(dir)
@@ -31,36 +31,34 @@ function createFileList(fileExplorerEle, dir, fileType) {
         let optionEle = document.createElement('option')
         optionEle.setAttribute('value', file)
         optionEle.innerHTML = path.basename(file)
-        fileExplorerEle.appendChild(optionEle)
+        fileList.appendChild(optionEle)
       })
     })
   }
 }
 
-export function createFileExplorer(dir = '', fileType = '') {
-  let fileExplorerEle = document.getElementsByClassName('file-explorer')[0]
+export function createFileList(dir = '', fileType = '') {
+  let fileList = document.getElementsByClassName('file-list')[0]
   // clear children if exists
-  if (fileExplorerEle.firstChild) {
-    while (fileExplorerEle.firstChild) {
-      fileExplorerEle.removeChild(fileExplorerEle.firstChild)
+  if (fileList.firstChild) {
+    while (fileList.firstChild) {
+      fileList.removeChild(fileList.firstChild)
     }
   }
 
   if (fileType === '') return
-
-  createFileList(fileExplorerEle, dir, fileType)
-
+  createFileListOption(fileList, dir, fileType)
 }
 
 function initEvent() {
-  let fileExplorerEle = document.getElementsByClassName('file-explorer')[0]
-  fileExplorerEle.addEventListener('change', (event) => {
+  let fileList = document.getElementsByClassName('file-list')[0]
+  fileList.addEventListener('change', (event) => {
     let file = event.target[event.target.selectedIndex]
     createFileDetail(file)
   })
 }
 
 export function initFileExplorer() {
-  createFileExplorer()
+  createFileList()
   initEvent()
 }

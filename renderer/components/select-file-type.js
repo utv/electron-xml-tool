@@ -1,6 +1,6 @@
 
 import appState from '../../appState.js'
-import { createFileExplorer } from './file-explorer.js'
+import { createFileList } from './file-list'
 
 function initEvent() {
   let selectEle = document.getElementsByClassName('file-type')[0]
@@ -11,7 +11,7 @@ function initEvent() {
     let fileType = event.target[event.target.selectedIndex].innerHTML
     appState['fileType'] = fileType
     console.log(fileType)
-    createFileExplorer(appState['dir'], appState['fileType'])
+    createFileList(appState['dir'], appState['fileType'])
   })
 }
 
@@ -32,7 +32,7 @@ export function createFileSelect(dir) {
     selectEle.appendChild(optionEle)
   }
 
-  createFileExplorer(dir)
+  createFileList(dir)
 }
 
 export function initFileSelect() {
