@@ -16,7 +16,9 @@ function addToOption(file, fileType, callback) {
 }
 
 function createFileList(fileExplorerEle, dir, fileType) {
+  console.log('createFileList')
   let optionEle = document.createElement('option')
+
   optionEle.setAttribute('value', 'Select One')
   optionEle.innerHTML = path.basename('Select One')
   fileExplorerEle.appendChild(optionEle)
@@ -34,19 +36,30 @@ function createFileList(fileExplorerEle, dir, fileType) {
   }
 }
 
-export function createFileExplorer(dir, fileType) {
-  // if (typeof appState['dir'] && typeof appState['fileType'] === 'undefined') return
+export function createFileExplorer(dir, fileType = '') {
   let fileExplorerEle = document.getElementsByClassName('file-explorer')[0]
   // clear children if exists
-  if (fileExplorerEle.childElementCount > 0) {
+  if (fileExplorerEle.firstChild) {
     while (fileExplorerEle.firstChild) {
       fileExplorerEle.removeChild(fileExplorerEle.firstChild)
     }
   }
 
+  if (fileType === '') return
+
   createFileList(fileExplorerEle, dir, fileType)
+
+}
+
+function initEvent() {
+  let fileExplorerEle = document.getElementsByClassName('file-explorer')[0]
   fileExplorerEle.addEventListener('change', (event) => {
     let file = event.target[event.target.selectedIndex]
 
   })
+}
+
+export function initFileExplorer() {
+  createFileExplorer()
+  initEvent()
 }
