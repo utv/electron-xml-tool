@@ -24,8 +24,5 @@ export function createRootNode(file = '') {
 
   root.end({ pretty: true })
   fs.writeFileSync(dest, root.toString())
-  console.log(root.toString())
+  return dest
 }
-
-// createRootNode()
-// console.log(root);

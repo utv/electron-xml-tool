@@ -2,6 +2,7 @@
 import fs from 'fs'
 import xml2js from 'xml2js'
 import path from 'path'
+import { createFileDetail } from './file-detail.js'
 
 function addToOption(file, fileType, callback) {
   if (fileType === 'xml') {
@@ -36,7 +37,7 @@ function createFileList(fileExplorerEle, dir, fileType) {
   }
 }
 
-export function createFileExplorer(dir, fileType = '') {
+export function createFileExplorer(dir = '', fileType = '') {
   let fileExplorerEle = document.getElementsByClassName('file-explorer')[0]
   // clear children if exists
   if (fileExplorerEle.firstChild) {
@@ -55,7 +56,7 @@ function initEvent() {
   let fileExplorerEle = document.getElementsByClassName('file-explorer')[0]
   fileExplorerEle.addEventListener('change', (event) => {
     let file = event.target[event.target.selectedIndex]
-
+    createFileDetail(file)
   })
 }
 

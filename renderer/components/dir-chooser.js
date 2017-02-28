@@ -12,7 +12,7 @@ export function createDirChooser() {
       document.getElementsByTagName('strong')[0].innerHTML = path.basename(filePaths[0])
       appState['dir'] = filePaths[0]
       createFileSelect(filePaths[0])
-      createRootNode(filePaths[0])
+      appState['outputFileName'] = createRootNode(filePaths[0])
     })
   })
 }
