@@ -1,4 +1,4 @@
-// import appState from '../../appState.js'
+import appState from '../../appState.js'
 import fs from 'fs'
 import xml2js from 'xml2js'
 import path from 'path'
@@ -17,7 +17,6 @@ function addToOption(file, fileType, callback) {
 }
 
 function createFileListOption(fileList, dir, fileType) {
-  console.log('createFileList')
   let optionEle = document.createElement('option')
 
   optionEle.setAttribute('value', 'Select One')
@@ -37,7 +36,8 @@ function createFileListOption(fileList, dir, fileType) {
   }
 }
 
-export function createFileList(dir = '', fileType = '') {
+export function createFileList(fileType = '') {
+  let dir = appState['dir']
   let fileList = document.getElementsByClassName('file-list')[0]
   // clear children if exists
   if (fileList.firstChild) {

@@ -1,5 +1,5 @@
 
-import appState from '../../appState.js'
+// import appState from '../../appState.js'
 import { createFileList } from './file-list'
 
 function initEvent() {
@@ -9,9 +9,7 @@ function initEvent() {
       return
 
     let fileType = event.target[event.target.selectedIndex].innerHTML
-    appState['fileType'] = fileType
-    console.log(fileType)
-    createFileList(appState['dir'], appState['fileType'])
+    createFileList(fileType)
   })
 }
 
