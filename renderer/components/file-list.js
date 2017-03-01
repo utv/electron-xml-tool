@@ -53,8 +53,11 @@ export function createFileList(fileType = '') {
 function initEvent() {
   let fileList = document.getElementsByClassName('file-list')[0]
   fileList.addEventListener('change', (event) => {
-    let file = event.target[event.target.selectedIndex]
-    createFileDetail(file)
+    let file = event.target[event.target.selectedIndex].value
+    let selectEle = document.getElementsByClassName('file-type')[0]
+    let fileType = selectEle.options[selectEle.selectedIndex].value
+    console.log(fileType)
+    createFileDetail(file, fileType)
   })
 }
 

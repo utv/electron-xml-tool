@@ -1,9 +1,9 @@
 let xml2js = require('xml2js')
 
-var obj = { name: "Super", Surname: "Man", age: 23 }
+let obj = { name: "Super", Surname: "Man", age: 23 }
 
-var builder = new xml2js.Builder()
-var xml = builder.buildObject(obj)
+let builder = new xml2js.Builder()
+let xml = builder.buildObject(obj)
 // console.log(xml)
 
 let xmlstr =
@@ -52,8 +52,25 @@ function traverseXML(node) {
   }
 }
 
+function addElement(obj) {
+
+  let newXML =
+    {
+      '$': { Name: 'My God', File: 'god.xml' },
+      Field: [{ _: '/map/test1', '$': { Name: 'Date', InlineJSON: 'thedate' } }]
+    }
+
+  obj['XML'].push(newXML)
+
+  let builder = new xml2js.Builder()
+  let xml = builder.buildObject(obj)
+  console.log(xml)
+}
+
 xml2js.parseString(xmlstr, function (err, result) {
-  traverseXML(result['Parser']['Application'])
+  // console.log(result['Parser']['Application'][0]['XML'])
+  addElement(result['Parser']['Application'][0])
+  // traverseXML(result['Parser']['Application'])
   // JSON.parse(result)
   // let output = ''
   // for (var property in result) {

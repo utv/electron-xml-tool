@@ -3,7 +3,7 @@ let fs = require('fs')
 let path = require('path')
 
 export function createRootNode(file = '') {
-  let dest = path.join(file, path.basename(file) + '.xml')
+  let dest = path.join(path.dirname(file), path.basename(file) + '.xml')
   console.log(dest)
 
   if (fs.existsSync(dest)) return
