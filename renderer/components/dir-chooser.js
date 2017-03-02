@@ -1,6 +1,6 @@
 import electron from 'electron'
 import path from 'path'
-import { createFileSelect } from './select-file-type'
+import { createFileTypeSelect } from './select-file-type'
 import { createRootNode } from '../utils/builder.js'
 import appState from '../../appState.js'
 
@@ -11,7 +11,7 @@ export function createDirChooser() {
 
       document.getElementsByTagName('strong')[0].innerHTML = path.basename(filePaths[0])
       appState['dir'] = filePaths[0]
-      createFileSelect(filePaths[0])
+      createFileTypeSelect(filePaths[0])
       appState['outputFileName'] = createRootNode(filePaths[0])
     })
   })

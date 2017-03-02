@@ -1,14 +1,31 @@
 import xml2js from 'xml2js'
 import fs from 'fs'
+import xmlModule from '../utils/xml'
+
 
 function renderXML(obj) {
-  console.log(typeof obj)
-  console.log(obj['map'])
   let tbody = document.createElement('tbody')
   // render row and columns
-  // for (let each in obj['map']) {
+  // entries = [ {name, key, value} ]
+  let entries = xmlModule.getXmlEntries(obj)
 
-  // }
+  let rows = []
+  for (let entry in entries) {
+    let row = document.createElement('tr')
+    for (let key in entries[entry]) {
+      let td = document.createElement('td')
+      td.innerHTML = entries[entry][key]
+      row.appendChild(td)
+    }
+    rows.push(row)
+  }
+
+  for (let row of rows) {
+    tbody.appendChild(row)
+  }
+
+  // obj['map'][each][i]['$', '_']
+  // tbody.appendChild(row)
   // add tbody into table
   let fileDetailEle = document.getElementsByClassName('file-detail')[0]
   fileDetailEle.getElementsByTagName('thead')[0].insertAdjacentElement('afterend', tbody)

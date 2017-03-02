@@ -13,7 +13,7 @@ function initEvent() {
   })
 }
 
-export function createFileSelect(dir) {
+export function createFileTypeSelect(dir) {
   let selectEle = document.getElementsByClassName('file-type')[0]
   const fileTypes = ['Select One', 'xml', 'json', 'sql']
   // clear select box
@@ -33,7 +33,7 @@ export function createFileSelect(dir) {
   createFileList(dir)
 }
 
-export function initFileSelect() {
-  createFileSelect()
+export function initFileTypeSelect() {
+  createFileTypeSelect()
   initEvent()
 }

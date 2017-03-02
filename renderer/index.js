@@ -3,11 +3,11 @@
 // import path from 'path'
 
 import { createDirChooser } from './components/dir-chooser.js'
-import { initFileExplorer } from './components/file-list'
-import { initFileSelect } from './components/select-file-type.js'
+import { initFileList } from './components/file-list'
+import { initFileTypeSelect } from './components/select-file-type.js'
 import { initFileDetail } from './components/file-detail.js'
 createDirChooser()
-initFileExplorer()
-initFileSelect()
+initFileList()
+initFileTypeSelect()
 initFileDetail()
 // createFileSelect()

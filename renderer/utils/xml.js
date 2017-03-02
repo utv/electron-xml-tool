@@ -1,13 +1,12 @@
-let xml2js = require('xml2js')
 
-let obj = { name: "Super", Surname: "Man", age: 23 }
+function test() {
+  let xml2js = require('xml2js')
+  let obj = { name: "Super", Surname: "Man", age: 23 }
+  let builder = new xml2js.Builder()
+  let xml = builder.buildObject(obj)
 
-let builder = new xml2js.Builder()
-let xml = builder.buildObject(obj)
-// console.log(xml)
-
-let xmlstr =
-  `<Parser version="1.0" Name="" Namespace="" Device="" icon="">
+  let xmlstr =
+    `<Parser version="1.0" Name="" Namespace="" Device="" icon="">
   <Application AppearsInGroups= "Messengers" Caption= "" name= "">
     <XML Name="Leanplum" File="%container%\\shared_prefs\\__leanplum__.xml">
       <Field Name="User Id" InlineJSON="userId">/map/__leanplum_unsynced_0</Field>
@@ -29,53 +28,36 @@ let xmlstr =
     </XML>
   </Application>
 </Parser >`
-
-function readField(ele) {
-  if (ele['XML'] !== undefined) {
-    // console.log(ele['XML'])
-    // ele['XML'][]
-  }
-
-  if (ele['SQLQuery'] !== undefined) {
-    console.log(ele['SQLQuery'])
-  }
-
-  // console.log(ele['$'])
 }
 
-function traverseXML(node) {
-  if (Array.isArray(node)) {
-    console.log("is array \n")
-    for (let each in node) {
-      readField(node[each])
+function getProps(obj = {}) {
+  let prop = {}
+  if (obj['$'] !== undefined && obj['_'] !== undefined) {
+    prop['rename'] = obj['$']['name']
+    prop['name'] = obj['$']['name']
+    prop['value'] = obj['_']
+  } else if (obj['$'] !== undefined && obj['$']['value'] !== undefined) {
+    prop['rename'] = obj['$']['name']
+    prop['name'] = obj['$']['name']
+    prop['value'] = obj['$']['value']
+  }
+
+  return prop
+}
+
+let xmlModule = {
+  getXmlEntries: function (obj = {}) {
+    // obj['map']['string'][i]['$']
+    let entries = []
+    for (let varType in obj['map']) {
+      for (let arr in obj['map'][varType]) {
+        let prop = getProps(obj['map'][varType][arr])
+        console.log(prop)
+        entries.push(prop)
+      }
     }
+    return entries
   }
 }
 
-function addElement(obj) {
-
-  let newXML =
-    {
-      '$': { Name: 'My God', File: 'god.xml' },
-      Field: [{ _: '/map/test1', '$': { Name: 'Date', InlineJSON: 'thedate' } }]
-    }
-
-  obj['XML'].push(newXML)
-
-  let builder = new xml2js.Builder()
-  let xml = builder.buildObject(obj)
-  console.log(xml)
-}
-
-xml2js.parseString(xmlstr, function (err, result) {
-  // console.log(result['Parser']['Application'][0]['XML'])
-  addElement(result['Parser']['Application'][0])
-  // traverseXML(result['Parser']['Application'])
-  // JSON.parse(result)
-  // let output = ''
-  // for (var property in result) {
-  //   // output += property + ': ' + result[property] + '; '
-  //   console.log(result[property])
-  // }
-  // console.log(result['Parser']['Application'][0]['XML'][0]['Field'])
-})
+export default xmlModule
