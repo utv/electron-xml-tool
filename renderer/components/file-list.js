@@ -1,4 +1,4 @@
-import appState from '../../appState.js'
+// import appState from '../../appState.js'
 import fs from 'fs'
 import xml2js from 'xml2js'
 import path from 'path'
@@ -16,9 +16,11 @@ function addToOption(file, fileType, callback) {
   }
 }
 
-function createFileListOption(fileList, dir, fileType) {
+export function createFileList(dir, fileType) {
+  clear()
+  // populate options
+  let fileList = document.getElementsByClassName('file-list')[0]
   let optionEle = document.createElement('option')
-
   optionEle.setAttribute('value', 'Select One')
   optionEle.innerHTML = path.basename('Select One')
   fileList.appendChild(optionEle)
@@ -36,8 +38,18 @@ function createFileListOption(fileList, dir, fileType) {
   }
 }
 
-export function createFileList(fileType = '') {
-  let dir = appState['dir']
+export function initFileListEvent() {
+  let fileList = document.getElementsByClassName('file-list')[0]
+  fileList.addEventListener('change', (event) => {
+    if (event === undefined) return
+    let file = event.target[event.target.selectedIndex].value
+    let selectEle = document.getElementsByClassName('file-type')[0]
+    let fileType = selectEle.options[selectEle.selectedIndex].value
+    createFileDetail(file, fileType)
+  })
+}
+
+function clear() {
   let fileList = document.getElementsByClassName('file-list')[0]
   // clear children if exists
   if (fileList.firstChild) {
@@ -45,24 +57,8 @@ export function createFileList(fileType = '') {
       fileList.removeChild(fileList.firstChild)
     }
   }
-
-  if (fileType === '') return
-  createFileListOption(fileList, dir, fileType)
 }
 
-function initEvent() {
-  let fileList = document.getElementsByClassName('file-list')[0]
-  fileList.addEventListener('change', (event) => {
-    if (event === undefined) return
-    let file = event.target[event.target.selectedIndex].value
-    let selectEle = document.getElementsByClassName('file-type')[0]
-    let fileType = selectEle.options[selectEle.selectedIndex].value
-    console.log(fileType)
-    createFileDetail(file, fileType)
-  })
-}
-
-export function initFileList() {
-  createFileList()
-  initEvent()
+export function clearFileList() {
+  clear()
 }

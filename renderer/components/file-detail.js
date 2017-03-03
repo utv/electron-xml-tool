@@ -3,12 +3,10 @@ import fs from 'fs'
 import xmlModule from '../utils/xml'
 
 
-function renderXML(obj) {
+function display(entries) {
   let tbody = document.createElement('tbody')
   // render row and columns
   // entries = [ {name, key, value} ]
-  let entries = xmlModule.getXmlEntries(obj)
-
   let rows = []
   for (let entry in entries) {
     let row = document.createElement('tr')
@@ -32,27 +30,23 @@ function renderXML(obj) {
   fileDetailEle.getElementsByTagName('thead')[0].insertAdjacentElement('afterend', tbody)
 }
 
-function renderBody(file, fileType, callback) {
+function readXML(file, fileType, callback) {
   if (fileType === 'xml') {
     fs.readFile(file, (err, data) => {
       xml2js.parseString(data, (err, result) => {
         if (err) return
         // console.log(result)
-        callback(result)
+        let entries = xmlModule.getXmlEntries(result)
+        callback(entries)
       })
     })
   }
 }
 
 export function createFileDetail(file = '', fileType = '') {
-  let fileDetailEle = document.getElementsByClassName('file-detail')[0]
-
-  // clear rows
-  while (fileDetailEle.firstChild) {
-    fileDetailEle.removeChild(fileDetailEle.firstChild)
-  }
-
+  clear()
   // table header
+  let fileDetailEle = document.getElementsByClassName('file-detail')[0]
   const thInnerHTML = ['Name', 'Key', 'Value']
   let thead = document.createElement('thead')
   fileDetailEle.insertAdjacentElement('afterbegin', thead)
@@ -64,16 +58,19 @@ export function createFileDetail(file = '', fileType = '') {
   }
 
   if (file !== '' && fileType !== '') {
-    renderBody(file, fileType, renderXML)
+    readXML(file, fileType, display)
   }
 
 }
 
-function initEvent() {
-
+function clear() {
+  let fileDetailEle = document.getElementsByClassName('file-detail')[0]
+  // clear rows
+  while (fileDetailEle.firstChild) {
+    fileDetailEle.removeChild(fileDetailEle.firstChild)
+  }
 }
 
-export function initFileDetail() {
-  createFileDetail()
-  initEvent()
+export function clearFileDetail() {
+  clear()
 }
