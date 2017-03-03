@@ -14,6 +14,7 @@ function renderXML(obj) {
     let row = document.createElement('tr')
     for (let key in entries[entry]) {
       let td = document.createElement('td')
+      td.setAttribute('class', key)
       td.innerHTML = entries[entry][key]
       row.appendChild(td)
     }

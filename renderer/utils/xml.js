@@ -50,9 +50,11 @@ let xmlModule = {
     // obj['map']['string'][i]['$']
     let entries = []
     for (let varType in obj['map']) {
+      if (Array.isArray)
+        console.log(obj['map'][varType].length)
+
       for (let arr in obj['map'][varType]) {
         let prop = getProps(obj['map'][varType][arr])
-        console.log(prop)
         entries.push(prop)
       }
     }
