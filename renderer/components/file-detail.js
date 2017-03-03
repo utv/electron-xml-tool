@@ -63,6 +63,7 @@ export function createFileDetail(file = '', fileType = '') {
     row.appendChild(th)
   }
 
+  // table body
   if (file !== '' && fileType !== '') {
     renderBody(file, fileType, renderXML)
   }
@@ -70,6 +71,7 @@ export function createFileDetail(file = '', fileType = '') {
 }
 
 function initEvent() {
+  let fileDetailEle = document.getElementsByClassName('file-detail')[0]
 
 }
 
