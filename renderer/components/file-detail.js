@@ -57,18 +57,25 @@ export function createFileDetail(file = '', fileType = '') {
     row.appendChild(th)
   }
 
+  // table body
   if (file !== '' && fileType !== '') {
     readXML(file, fileType, display)
   }
 
 }
 
+<<<<<<< HEAD
 function clear() {
   let fileDetailEle = document.getElementsByClassName('file-detail')[0]
   // clear rows
   while (fileDetailEle.firstChild) {
     fileDetailEle.removeChild(fileDetailEle.firstChild)
   }
+=======
+function initEvent() {
+  let fileDetailEle = document.getElementsByClassName('file-detail')[0]
+
+>>>>>>> de682c84003035204141ad978d91bacb25dde010
 }
 
 export function clearFileDetail() {
