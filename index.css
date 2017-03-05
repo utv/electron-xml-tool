@@ -5,3 +5,7 @@
 .result-panel {
   border: lightseagreen
 }
+
+#table-head {
+  display: none
+}

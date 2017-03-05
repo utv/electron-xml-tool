@@ -41,8 +41,9 @@ class FileListSelect {
     optionEle.setAttribute('value', 'Select One')
     optionEle.innerHTML = path.basename('Select One')
     fileList.appendChild(optionEle)
-    // add new children
+
     if (selectedFileType === 'xml') {
+      // if xml, add into a select box
       let finder = require('findit')(dirPath)
       finder.on('file', function (file, stat) {
         xmlManager.isXML(file, () => {
