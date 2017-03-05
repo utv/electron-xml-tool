@@ -1,25 +1,36 @@
 
 import electron from 'electron'
-import path from 'path'
-import { createFileTypeSelect, clearFileTypeSelect, initFileTypeSelectEvent } from './components/file-type'
-import { initFileListEvent, clearFileList } from './components/file-list'
-import { clearFileDetail } from './components/file-detail.js'
-// import { createDirChooser } from './components/dir-chooser.js'
+// import path from 'path'
+import { FileTypeSelect } from './components/file-type'
+import { FileListSelect } from './components/file-list'
+// import { clearFileDetail } from './components/file-detail.js'
+import { DirChooser } from './components/dir-chooser'
 
-document.getElementsByClassName('dir-chooser')[0].addEventListener('click', () => {
+// components
+let dirChooser = new DirChooser()
+let fileTypeSelect = new FileTypeSelect()
+let fileListSelect = new FileListSelect()
+
+dirChooser.onClick(() => {
   electron.remote.dialog.showOpenDialog({ properties: ['openDirectory'] }, (filePaths) => {
     if (filePaths === undefined) return
 
-    document.getElementsByTagName('strong')[0].innerHTML = path.basename(filePaths[0])
-    document.getElementById('dir').setAttribute('value', filePaths[0])
-    clearFileTypeSelect()
-    clearFileList()
-    clearFileDetail()
-    createFileTypeSelect()
+    dirChooser.dirPath = filePaths[0]
+    dirChooser.displayDirText.setAttribute('value', filePaths[0])
+    fileTypeSelect.clear()
+    fileListSelect.clear()
+    // clearFileDetail()
+    fileTypeSelect.populate()
   })
 })
 
-initFileTypeSelectEvent()
-initFileListEvent()
-// initFileDetail()
-// createFileSelect()
+fileTypeSelect.onChange((event) => {
+  if (event.target[event.target.selectedIndex].innerHTML === 'Select One')
+    return
+
+  fileTypeSelect.selectedFileType = event.target[event.target.selectedIndex].innerHTML
+  fileListSelect.populate(dirChooser.dirPath, fileTypeSelect.selectedFileType)
+})
+
+
+// let fileDetailTable = document.getElementsByClassName('file-detail')[0]

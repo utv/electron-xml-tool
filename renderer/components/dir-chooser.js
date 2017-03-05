@@ -1,9 +1,15 @@
-import electron from 'electron'
-import path from 'path'
-import { createFileTypeSelect } from './select-file-type'
-import { createRootNode } from '../utils/builder.js'
-// import appState from '../../appState.js'
+'use strict'
 
-export function createDirChooser() {
+class DirChooser {
+  constructor() {
+    this.button = document.getElementsByClassName('dir-chooser')[0]
+    this.displayDirText = document.getElementsByTagName('strong')[0]
+    this.dirPath = ''
+  }
 
+  onClick(listener) {
+    this.button.addEventListener('click', listener)
+  }
 }
+
+export { DirChooser }
