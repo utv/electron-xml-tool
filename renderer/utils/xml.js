@@ -18,7 +18,7 @@ function getProps(obj = {}) {
   return prop
 }
 
-let xmlModule = {
+/*let xmlModule = {
   getXmlEntries: function (obj = {}) {
     // obj['map']['string'][i]['$']
     let entries = []
@@ -34,12 +34,27 @@ let xmlModule = {
     return entries
   }
 }
-
-export default xmlModule
+*/
+// export default xmlModule
 
 class XmlManger {
   constructor() {
 
+  }
+
+  getXmlEntries(obj = {}) {
+    // obj['map']['string'][i]['$']
+    let entries = []
+    for (let varType in obj['map']) {
+      // if (Array.isArray)
+      // console.log(obj['map'][varType].length)
+
+      for (let arr in obj['map'][varType]) {
+        let prop = getProps(obj['map'][varType][arr])
+        entries.push(prop)
+      }
+    }
+    return entries
   }
 
   isXML(filePath, callback) {
