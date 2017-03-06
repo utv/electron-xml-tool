@@ -1,5 +1,6 @@
 'use strict'
 import { fileManager } from '../utils/file-manager'
+import { Input } from './input'
 
 export class FileContentTable {
   constructor() {
@@ -44,7 +45,7 @@ export class FileContentTable {
     this.tableHead.insertAdjacentElement('afterend', tbody)
   }
 
-  populate(fileType, filePath) {
+  populate(dirPath, fileType, filePath) {
     if (fileType === undefined || filePath === undefined)
       return
 
@@ -52,9 +53,9 @@ export class FileContentTable {
     this.clear()
     this.tableHead.style.display = 'block'
 
-    // display data
+    // if a output node for this file is not created,
+    // read xml and display it
     if (fileType === 'xml') {
-      this.display({})
       fileManager.readXML(filePath, (entries) => {
         this.display(entries)
       })
