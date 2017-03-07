@@ -45,18 +45,40 @@ export class OutputBuilder {
     this.traverse(nodeName)
   }
 
+  /*traverse(obj, key, callback) {
+    if (this.json === '') return
+
+    if (obj[key] === undefined) {
+      for (let i in obj) {
+        if (obj.hasOwnProperty(i) || i !== 'length') {
+          console.log(`i = ${i}, obj[i] = ${obj[i]}`)
+          if (typeof obj[i] === 'object')
+            this.traverse(obj[i], key, callback)
+        }
+      }
+    } else {
+      console.log(obj[key])
+      // console.log(obj[key])
+      // return obj[key]
+      callback(obj[key])
+    }
+  }*/
+
   traverse(obj, key) {
     if (this.json === '') return
 
     if (obj[key] === undefined) {
       for (let i in obj) {
-        console.log(obj[i])
-        if (obj.hasOwnProperty(i))
-          return this.traverse(obj[i], key)
+        if (obj.hasOwnProperty(i)) {
+          if (typeof obj[i] === 'object') {
+            let result = this.traverse(obj[i], key)
+            if (result !== null)
+              return result
+          }
+        }
       }
-      return ''
+      return null
     } else {
-      console.log(obj[key])
       return obj[key]
     }
   }
