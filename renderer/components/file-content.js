@@ -59,6 +59,8 @@ export class FileContentTable {
       xmlManager.readXML(filePath, (entries) => {
         this.display(entries)
       })
+
+
     }
   }
 

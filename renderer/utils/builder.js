@@ -10,35 +10,28 @@ export class OutputBuilder {
     this.json = ''
   }
 
-  editNode(nodeName) {
-    if (this.json === '') return
+  getValue(theKey) {
+    function traverse(obj, key) {
+      if (obj === '') return
 
-    this.traverse(nodeName)
-  }
-
-
-  traverse(obj, key) {
-    if (this.json === '') return
-
-    if (obj[key] === undefined) {
-      for (let i in obj) {
-        if (obj.hasOwnProperty(i)) {
-          if (typeof obj[i] === 'object') {
-            let result = this.traverse(obj[i], key)
-            if (result !== null)
-              return result
+      if (obj[key] === undefined) {
+        for (let i in obj) {
+          if (obj.hasOwnProperty(i)) {
+            if (typeof obj[i] === 'object') {
+              let result = traverse(obj[i], key)
+              if (result !== null)
+                return result
+            }
           }
         }
+        return null
+      } else {
+        return obj[key]
       }
-      return null
-    } else {
-      return obj[key]
     }
-  }
 
-  getValue(theKey) {
     if (this.json === '') return
-    return this.traverse(this.json, theKey)
+    return traverse(this.json, theKey)
   }
 
   loadXmltoJson() {
