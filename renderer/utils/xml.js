@@ -1,8 +1,8 @@
 'use strict'
 import fs from 'fs'
 import xml2js from 'xml2js'
-// import path from 'path'
 
+// get obj out of an xml field, key 'rename' means name to be set by dev
 function getProps(obj = {}) {
   let prop = {}
   if (obj['$'] !== undefined && obj['_'] !== undefined) {
@@ -23,6 +23,7 @@ class XmlManger {
 
   }
 
+  // get obj out of android xml file
   getXmlEntries(obj = {}) {
     // obj['map']['string'][i]['$']
     let entries = []
@@ -38,6 +39,7 @@ class XmlManger {
     return entries
   }
 
+  // if it's xml, do callback
   isXML(filePath, callback) {
     if (filePath === '' || callback === undefined) return
 
@@ -50,6 +52,7 @@ class XmlManger {
     })
   }
 
+  // read xml to obj, send obj to callback
   readXML(file, callback) {
     fs.readFile(file, (err, data) => {
       xml2js.parseString(data, (err, result) => {
@@ -63,4 +66,3 @@ class XmlManger {
 
 }
 export let xmlManager = new XmlManger()
-
