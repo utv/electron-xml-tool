@@ -3,35 +3,6 @@ import fs from 'fs'
 import path from 'path'
 import xml2js from 'xml2js'
 
-/*export function createRootNode(file = '') {
-  let dest = path.join(path.dirname(file), path.basename(file) + '.xml')
-  console.log(dest)
-
-  if (fs.existsSync(dest)) return
-
-  let caption = ''
-  let xmlbuilder = require('xmlbuilder')
-  var root = xmlbuilder.create('Parser', { encoding: 'UTF-8' })
-  root.att('version', '1.0')
-  root.att('Name', '')
-  root.att('Namespace', 'Susteen.Core.AppData' + caption)
-  root.att('Device', '')
-  root.att('icon', '')
-
-  let app = root.ele('Application',
-    {
-      'AppearsInGroups': 'Messengers',
-      'Caption': '',
-      'name': ''
-    })
-
-  root.end({ pretty: true })
-  fs.writeFileSync(dest, root.toString())
-  return dest
-}*/
-
-
-
 export class OutputBuilder {
   constructor() {
     this.dirPath = ''
@@ -45,24 +16,6 @@ export class OutputBuilder {
     this.traverse(nodeName)
   }
 
-  /*traverse(obj, key, callback) {
-    if (this.json === '') return
-
-    if (obj[key] === undefined) {
-      for (let i in obj) {
-        if (obj.hasOwnProperty(i) || i !== 'length') {
-          console.log(`i = ${i}, obj[i] = ${obj[i]}`)
-          if (typeof obj[i] === 'object')
-            this.traverse(obj[i], key, callback)
-        }
-      }
-    } else {
-      console.log(obj[key])
-      // console.log(obj[key])
-      // return obj[key]
-      callback(obj[key])
-    }
-  }*/
 
   traverse(obj, key) {
     if (this.json === '') return

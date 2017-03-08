@@ -18,25 +18,6 @@ function getProps(obj = {}) {
   return prop
 }
 
-/*let xmlModule = {
-  getXmlEntries: function (obj = {}) {
-    // obj['map']['string'][i]['$']
-    let entries = []
-    for (let varType in obj['map']) {
-      if (Array.isArray)
-        console.log(obj['map'][varType].length)
-
-      for (let arr in obj['map'][varType]) {
-        let prop = getProps(obj['map'][varType][arr])
-        entries.push(prop)
-      }
-    }
-    return entries
-  }
-}
-*/
-// export default xmlModule
-
 class XmlManger {
   constructor() {
 
@@ -65,6 +46,17 @@ class XmlManger {
       parser.parseString(data, function (err, result) {
         if (err) return
         else callback()
+      })
+    })
+  }
+
+  readXML(file, callback) {
+    fs.readFile(file, (err, data) => {
+      xml2js.parseString(data, (err, result) => {
+        if (err) return
+        // console.log(result)
+        let entries = xmlManager.getXmlEntries(result)
+        callback(entries)
       })
     })
   }

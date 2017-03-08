@@ -1,6 +1,6 @@
 'use strict'
-import { fileManager } from '../utils/file-manager'
-import { Input } from './input'
+import { xmlManager } from '../utils/xml'
+
 
 export class FileContentTable {
   constructor() {
@@ -56,7 +56,7 @@ export class FileContentTable {
     // if a output node for this file is not created,
     // read xml and display it
     if (fileType === 'xml') {
-      fileManager.readXML(filePath, (entries) => {
+      xmlManager.readXML(filePath, (entries) => {
         this.display(entries)
       })
     }
