@@ -59,21 +59,19 @@ export class OutputBuilder {
 
     let caption = ''
     let xmlbuilder = require('xmlbuilder')
-    var root = xmlbuilder.create('Parser', { encoding: 'UTF-8' })
-    root.att('version', '1.0')
-    root.att('Name', 'GroupLyftParser')
-    root.att('Namespace', 'Susteen.Core.AppData' + caption)
-    root.att('Device', '')
-    root.att('icon', '')
-
-    let app = root.ele('Application',
+    let root = xmlbuilder.create('Parser', { encoding: 'UTF-8' }).dec('1.0', 'UTF-8')
+      .att('version', '1.0')
+      .att('Name', 'GroupLyftParser')
+      .att('Namespace', 'Susteen.Core.AppData' + caption)
+      .att('Device', '')
+      .att('icon', '')
+      .ele('Application',
       {
         'AppearsInGroups': 'Messengers',
         'Caption': 'GroupLyft',
         'name': path.basename(this.dirPath)
-      })
+      }).end({ pretty: true })
 
-    root.end({ pretty: true })
     this.outputFilePath = path.resolve(path.dirname(this.dirPath), path.basename(this.dirPath) + '.xml')
     fs.writeFileSync(this.outputFilePath, root.toString())
   }
