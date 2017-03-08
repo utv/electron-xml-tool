@@ -26,10 +26,11 @@ dirChooser.onClick(() => {
 
     dirChooser.dirPath = filePaths[0]
     dirChooser.displayDirText.innerHTML = path.basename(filePaths[0])
-    outputBuilder.createOutputXML(filePaths[0])
-
-    fileTypeSelect.populate()
-    appNameInput.innerHTML = outputBuilder.getValue('AppearsInGroups')
+    outputBuilder.createOutputXML(filePaths[0], () => {
+      fileTypeSelect.populate()
+      appNameInput.innerHTML = outputBuilder.getValue('AppearsInGroups')
+      outputBuilder.getTagNode('Application')
+    })
   })
 })
 

@@ -1,7 +1,23 @@
-// import { appState } from '../../appState.js'
 import fs from 'fs'
 import path from 'path'
 import xml2js from 'xml2js'
+
+function traverse(obj, key) {
+  if (obj === '') return
+
+  if (obj[key] === undefined) {
+    for (let i in obj) {
+      if (obj.hasOwnProperty(i) && typeof obj[i] === 'object') {
+        let result = traverse(obj[i], key)
+        if (result !== null)
+          return result
+      }
+    }
+    return null
+  } else {
+    return obj[key]
+  }
+}
 
 export class OutputBuilder {
   constructor() {
@@ -11,38 +27,29 @@ export class OutputBuilder {
   }
 
   getValue(theKey) {
-    function traverse(obj, key) {
-      if (obj === '') return
-
-      if (obj[key] === undefined) {
-        for (let i in obj) {
-          if (obj.hasOwnProperty(i)) {
-            if (typeof obj[i] === 'object') {
-              let result = traverse(obj[i], key)
-              if (result !== null)
-                return result
-            }
-          }
-        }
-        return null
-      } else {
-        return obj[key]
-      }
-    }
-
     if (this.json === '') return
+
     return traverse(this.json, theKey)
   }
 
-  loadXmltoJson() {
+  getTagNode(nodeName) {
+    console.log(this.json)
+    let obj = this.getValue(nodeName)
+    // console.log(obj)
+  }
+
+  loadXmltoJson(callback) {
     var parser = new xml2js.Parser()
     let data = fs.readFileSync(this.outputFilePath)
 
     parser.parseString(data, (err, result) => {
-      if (err) return
+      if (err) {
+        console.log(err)
+        return
+      }
       else {
-        // console.log(JSON.stringify(result))
         this.json = result
+        callback()
       }
     })
   }
@@ -67,15 +74,15 @@ export class OutputBuilder {
       })
 
     root.end({ pretty: true })
-    // console.log(root.toString())
-    // fs.writeFileSync(dest, root.toString())
+    this.outputFilePath = path.resolve(path.dirname(this.dirPath), path.basename(this.dirPath) + '.xml')
+    fs.writeFileSync(this.outputFilePath, root.toString())
   }
 
-  createOutputXML(dirPath) {
+  createOutputXML(dirPath, callback) {
     this.dirPath = dirPath
     this.outputFilePath = path.join(path.dirname(dirPath), path.basename(dirPath) + '.xml')
     this.createRootNode()
-    this.loadXmltoJson()
+    this.loadXmltoJson(callback)
     // console.log(this.outputFilePath)
   }
 }
