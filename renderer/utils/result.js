@@ -4,13 +4,11 @@ import xml2js from 'xml2js'
 
 class ResultBuilder {
   constructor() {
-    this.dirPath = ''
-    this.outputFilePath = ''
-    this.json = ''
+
   }
 
-  getValue(theKey) {
-    if (this.json === '') return
+  getValue(json, theKey) {
+    if (json === '') return
     function traverse(obj, key) {
       if (obj === '') return
 
@@ -28,18 +26,12 @@ class ResultBuilder {
       }
     }
 
-    return traverse(this.json, theKey)
+    return traverse(json, theKey)
   }
 
-  getTagNode(nodeName) {
-    console.log(this.json)
-    let obj = this.getValue(nodeName)
-    // console.log(obj)
-  }
-
-  loadResult2Json(callback) {
+  loadResult2Json(dirPath, callback) {
     var parser = new xml2js.Parser()
-    let data = fs.readFileSync(this.outputFilePath)
+    let data = fs.readFileSync(this.createResultFilePath(dirPath))
 
     parser.parseString(data, (err, result) => {
       if (err) {
@@ -47,14 +39,14 @@ class ResultBuilder {
         return
       }
       else {
-        this.json = result
-        callback()
+        // json = result
+        callback(result)
       }
     })
   }
 
-  createRootNode() {
-    if (fs.existsSync(this.outputFilePath)) return
+  createRootNode(dirPath) {
+    if (fs.existsSync(this.createResultFilePath(dirPath))) return
 
     let caption = ''
     let xmlbuilder = require('xmlbuilder')
@@ -68,19 +60,20 @@ class ResultBuilder {
       {
         'AppearsInGroups': 'Messengers',
         'Caption': 'GroupLyft',
-        'name': path.basename(this.dirPath)
+        'name': path.basename(dirPath)
       }).end({ pretty: true })
 
-    this.outputFilePath = path.resolve(path.dirname(this.dirPath), path.basename(this.dirPath) + '.xml')
-    fs.writeFileSync(this.outputFilePath, root.toString())
+    fs.writeFileSync(this.createResultFilePath(dirPath), root.toString())
+  }
+
+  createResultFilePath(dirPath) {
+    return path.resolve(path.dirname(dirPath), path.basename(dirPath) + '.xml')
   }
 
   createOutputXML(dirPath, callback) {
-    this.dirPath = dirPath
-    this.outputFilePath = path.join(path.dirname(dirPath), path.basename(dirPath) + '.xml')
-    this.createRootNode()
-    this.loadResult2Json(callback)
-    // console.log(this.outputFilePath)
+    this.createRootNode(dirPath)
+    this.loadResult2Json(dirPath, callback)
+    // console.log(this.createResultFilePath)
   }
 }
 export let resultBuilder = new ResultBuilder()

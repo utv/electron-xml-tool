@@ -24,12 +24,13 @@ dirChooser.onClick(() => {
     fileContentTable.clear()
     // clearFileDetail()
 
-    dirChooser.dirPath = filePaths[0]
-    dirChooser.displayDirText.innerHTML = path.basename(filePaths[0])
-    resultBuilder.createOutputXML(filePaths[0], () => {
+
+    resultBuilder.createOutputXML(filePaths[0], (result) => {
+      dirChooser.dirPath = filePaths[0]
+      dirChooser.displayDirText.innerHTML = path.basename(filePaths[0])
       fileTypeSelect.populate()
-      appNameInput.innerHTML = resultBuilder.getValue('AppearsInGroups')
-      resultBuilder.getTagNode('Application')
+      appNameInput.innerHTML = resultBuilder.getValue(result, 'AppearsInGroups')
+      // resultBuilder.getTagNode('Application')
     })
   })
 })

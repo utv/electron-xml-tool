@@ -28,7 +28,13 @@ export class FileContentTable {
   }
 
   rowSelect(event) {
-    event.target.parentNode.className = 'selected-row'
+    if (event.target.parentNode.className !== 'selected-row') {
+      event.target.parentNode.className = 'selected-row'
+      // add this key into result
+    } else {
+      // remove this key from result
+    }
+
   }
 
   display(entries) {
