@@ -29,6 +29,30 @@ class ResultBuilder {
     return traverse(json, theKey)
   }
 
+  getXmlTag(json, filePath) {
+    // look for XML with File attr having filePath
+    if (json === '') return
+    function traverse(obj, tag, attr, attrVal) {
+      if (obj === '') return
+
+      // pending ********* do more conditions here ********
+      if (obj[tag] === undefined) {
+        for (let i in obj) {
+          if (obj.hasOwnProperty(i) && typeof obj[i] === 'object') {
+            let result = traverse(obj[i], tag, attr, attrVal)
+            if (result !== null)
+              return result
+          }
+        }
+        return null
+      } else {
+        return obj[key]
+      }
+    }
+
+    return traverse(json, 'XML', 'File', filePath)
+  }
+
   loadResult2Json(dirPath, callback) {
     var parser = new xml2js.Parser()
     let data = fs.readFileSync(this.createResultFilePath(dirPath))

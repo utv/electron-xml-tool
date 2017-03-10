@@ -32,6 +32,7 @@ export class FileContentTable {
       event.target.parentNode.className = 'selected-row'
       // add this key into result
     } else {
+      event.target.parentNode.classList.remove('selected-row')
       // remove this key from result
     }
 
@@ -56,7 +57,6 @@ export class FileContentTable {
       tbody.appendChild(row)
     }
 
-
     // obj['map'][each][i]['$', '_']
     // tbody.appendChild(row)
     // add tbody into table
@@ -71,14 +71,17 @@ export class FileContentTable {
     this.clear()
     this.tableHead.style.display = 'block'
 
-
     // if a output node for this file is not created,
     // read android xml file and display it
     if (fileType === 'xml') {
       xmlManager.readXML(filePath, (entries) => {
         this.display(entries)
         // read resultXML to get selected fields
-        // resultBuilder.loadResult2Json()
+        resultBuilder.loadResult2Json(dirPath, (json) => {
+          let selectedKeys = (json, filePath) => {
+            // do work
+          }
+        })
       })
 
 
