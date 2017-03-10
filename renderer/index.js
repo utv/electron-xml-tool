@@ -4,10 +4,10 @@ import { FileTypeSelect } from './components/file-type'
 import { FileListSelect } from './components/file-list'
 import { DirChooser } from './components/dir-chooser'
 import { FileContentTable } from './components/file-content'
-import { OutputBuilder } from './utils/builder'
+import { resultBuilder } from './utils/result'
 import path from 'path'
 
-let outputBuilder = new OutputBuilder()
+
 // components
 let dirChooser = new DirChooser()
 let appNameInput = document.getElementById('app-name')
@@ -26,10 +26,10 @@ dirChooser.onClick(() => {
 
     dirChooser.dirPath = filePaths[0]
     dirChooser.displayDirText.innerHTML = path.basename(filePaths[0])
-    outputBuilder.createOutputXML(filePaths[0], () => {
+    resultBuilder.createOutputXML(filePaths[0], () => {
       fileTypeSelect.populate()
-      appNameInput.innerHTML = outputBuilder.getValue('AppearsInGroups')
-      outputBuilder.getTagNode('Application')
+      appNameInput.innerHTML = resultBuilder.getValue('AppearsInGroups')
+      resultBuilder.getTagNode('Application')
     })
   })
 })
@@ -52,4 +52,5 @@ fileListSelect.onChange((event) => {
   let fileType = fileTypeSelect.selectedFileType
   fileContentTable.populate(dirChooser.dirPath, fileType, filePath)
 })
-// let fileDetailTable = document.getElementsByClassName('file-detail')[0]
+
+// fileContentTable

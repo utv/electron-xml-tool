@@ -2,24 +2,7 @@ import fs from 'fs'
 import path from 'path'
 import xml2js from 'xml2js'
 
-function traverse(obj, key) {
-  if (obj === '') return
-
-  if (obj[key] === undefined) {
-    for (let i in obj) {
-      if (obj.hasOwnProperty(i) && typeof obj[i] === 'object') {
-        let result = traverse(obj[i], key)
-        if (result !== null)
-          return result
-      }
-    }
-    return null
-  } else {
-    return obj[key]
-  }
-}
-
-export class OutputBuilder {
+class ResultBuilder {
   constructor() {
     this.dirPath = ''
     this.outputFilePath = ''
@@ -28,6 +11,22 @@ export class OutputBuilder {
 
   getValue(theKey) {
     if (this.json === '') return
+    function traverse(obj, key) {
+      if (obj === '') return
+
+      if (obj[key] === undefined) {
+        for (let i in obj) {
+          if (obj.hasOwnProperty(i) && typeof obj[i] === 'object') {
+            let result = traverse(obj[i], key)
+            if (result !== null)
+              return result
+          }
+        }
+        return null
+      } else {
+        return obj[key]
+      }
+    }
 
     return traverse(this.json, theKey)
   }
@@ -38,7 +37,7 @@ export class OutputBuilder {
     // console.log(obj)
   }
 
-  loadXmltoJson(callback) {
+  loadResult2Json(callback) {
     var parser = new xml2js.Parser()
     let data = fs.readFileSync(this.outputFilePath)
 
@@ -80,7 +79,8 @@ export class OutputBuilder {
     this.dirPath = dirPath
     this.outputFilePath = path.join(path.dirname(dirPath), path.basename(dirPath) + '.xml')
     this.createRootNode()
-    this.loadXmltoJson(callback)
+    this.loadResult2Json(callback)
     // console.log(this.outputFilePath)
   }
 }
+export let resultBuilder = new ResultBuilder()

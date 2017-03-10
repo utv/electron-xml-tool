@@ -9,3 +9,7 @@
 #table-head {
   display: none
 }
+
+.selected-row {
+  background-color: lightgreen
+}
