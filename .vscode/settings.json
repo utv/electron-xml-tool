@@ -3,5 +3,5 @@
     "editor.formatOnPaste": true,
     "editor.formatOnSave": true,
     "editor.tabSize": 2,
-    "files.autoSave": "onFocusChange"
+    "files.autoSave": "off"
 }

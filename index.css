@@ -10,6 +10,10 @@
   display: none
 }
 
+.processing-row {
+  background-color: lightcoral
+}
+
 .selected-row {
   background-color: lightgreen
 }

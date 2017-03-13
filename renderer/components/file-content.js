@@ -1,4 +1,6 @@
 'use strict'
+import path from 'path'
+import xml2js from 'xml2js'
 import { xmlManager } from '../utils/xml'
 import { resultBuilder } from '../utils/result'
 
@@ -8,6 +10,7 @@ export class FileContentTable {
     this.table = document.getElementsByClassName('file-content')[0]
     this.tableHead = document.getElementById('table-head')
     this.body = document.getElementById('content')
+    // this.status = document.getElementById('status')
     this.rows = []
   }
 
@@ -29,29 +32,53 @@ export class FileContentTable {
 
   rowSelect(event) {
     if (event.target.parentNode.className !== 'selected-row') {
+      event.target.parentNode.className = 'processing-row'
+      let dirPath = event.target.parentNode.dirPath
+      resultBuilder.loadResult2Json(dirPath, (json) => {
+        if (event.target.parentNode.fileType === 'xml') {
+          let row = event.target.parentNode
+          xmlManager.add2XmlTag(json, row)
+          console.log(json)
+        }
+      })
       event.target.parentNode.className = 'selected-row'
-      // add this key into result
-    } else {
-      event.target.parentNode.classList.remove('selected-row')
-      // remove this key from result
+    } else if (event.target.parentNode.className === 'processing-row') {
+      // do nothing, it's processing
+    }
+    else {
+      // remove this key from result then update css
+      /*event.target.parentNode.className = 'processing-row'
+      let dirPath = event.target.parentNode.dirPath
+      resultBuilder.loadResult2Json(dirPath, (json) => {
+        if (event.target.parentNode.fileType === 'xml') {
+          let row = event.target.parentNode
+          xmlManager.removeFromXmlTag(json, row)
+          console.log(json)
+        }
+      })
+      event.target.parentNode.classList.remove('selected-row')*/
     }
 
   }
 
-  display(entries) {
+  // entries = obj['map']['string'][i]['$']
+  display(dirPath, fileType, filePath, entries) {
     let tbody = this.body
     // render row and columns
-    // entries = [ {name, key, value} ]
+    // entries = [ {rename, name, value} ]
 
     for (let entry in entries) {
       let row = document.createElement('tr')
+      row.dirPath = dirPath
+      row.fileType = fileType
+      row.filePath = filePath
+
       for (let key in entries[entry]) {
         let td = document.createElement('td')
         td.setAttribute('class', key)
         td.innerHTML = entries[entry][key]
         row.appendChild(td)
       }
-
       row.addEventListener('click', this.rowSelect)
       this.rows.push(row)
       tbody.appendChild(row)
@@ -75,13 +102,20 @@ export class FileContentTable {
     // read android xml file and display it
     if (fileType === 'xml') {
       xmlManager.readXML(filePath, (entries) => {
-        this.display(entries)
+        this.display(dirPath, fileType, filePath, entries)
         // read resultXML to get selected fields
-        resultBuilder.loadResult2Json(dirPath, (json) => {
-          let selectedKeys = (json, filePath) => {
-            // do work
+        /*resultBuilder.loadResult2Json(dirPath, (json) => {
+          let xmlTag = resultBuilder.getTag(json, 'XML', 'File', path.basename(filePath))
+          if (xmlTag === null) return
+          console.log(xmlTag['_'])
+          for (let row in xmlTag['_']) {
+            for (let ele in this.body.children) {
+              if (xmlTag['_'][row][]) {
+                 
+               }
+            }
           }
-        })
+        })*/
       })
 
 

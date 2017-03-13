@@ -30,7 +30,8 @@ dirChooser.onClick(() => {
       dirChooser.displayDirText.innerHTML = path.basename(filePaths[0])
       fileTypeSelect.populate()
       appNameInput.innerHTML = resultBuilder.getValue(result, 'AppearsInGroups')
-      // resultBuilder.getTagNode('Application')
+      // console.log(result)
+
     })
   })
 })
