@@ -3,5 +3,7 @@
     "editor.formatOnPaste": true,
     "editor.formatOnSave": true,
     "editor.tabSize": 2,
-    "files.autoSave": "off"
+    "files.autoSave": "off",
+    "editor.renderIndentGuides": true,
+    "editor.renderLineHighlight": "gutter"
 }

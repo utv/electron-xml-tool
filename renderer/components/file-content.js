@@ -104,18 +104,16 @@ export class FileContentTable {
       xmlManager.readXML(filePath, (entries) => {
         this.display(dirPath, fileType, filePath, entries)
         // read resultXML to get selected fields
-        /*resultBuilder.loadResult2Json(dirPath, (json) => {
-          let xmlTag = resultBuilder.getTag(json, 'XML', 'File', path.basename(filePath))
-          if (xmlTag === null) return
-          console.log(xmlTag['_'])
-          for (let row in xmlTag['_']) {
-            for (let ele in this.body.children) {
-              if (xmlTag['_'][row][]) {
-                 
-               }
-            }
-          }
-        })*/
+        resultBuilder.loadResult2Json(dirPath, (json) => {
+          console.log(json)
+          let tagFilePath = resultBuilder.createTagFilePath(dirPath, filePath)
+          let tagNode = resultBuilder.getTag(json, 'XML', 'File', tagFilePath)
+          if (tagNode === null) return
+
+          let fields = resultBuilder.getValue(tagNode, 'Field')
+          console.log(fields)
+          // this.display(dirPath, fileType, filePath, entries, selectedKeys)
+        })
       })
 
 
