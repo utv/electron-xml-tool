@@ -1,6 +1,7 @@
 import path from 'path'
 import electron from 'electron'
 // import crashReporter from 'crash-reporter'
+
 import { enableLiveReload } from 'electron-compile'
 enableLiveReload()
 
@@ -21,6 +22,7 @@ function createWindow() {
     width: 580,
     height: 365
   })
+
   console.log(__dirname)
   const url = path.resolve(__dirname, './renderer/index.html')
   mainWindow.loadURL(`file://${url}`)

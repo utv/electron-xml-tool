@@ -30,12 +30,13 @@ class ResultBuilder {
     return traverse(json, theKey)
   }
 
-  getTag(json, tag, attr, attrVal) {
+  getTagByAttr(json, tag, attr, attrVal) {
     let tagArr = this.getValue(json, tag)
-    console.log(tagArr)
+
     // tagArr[eachTag]['$'][attr]
     for (let eachTag in tagArr) {
-      if (this.getValue(tagArr[eachTag], attr).indexOf(attrVal) !== -1) {
+      // if (this.getValue(tagArr[eachTag], attr).indexOf(attrVal) !== -1) {
+      if (this.getValue(tagArr[eachTag], attr) === attrVal) {
         console.log(this.getValue(tagArr[eachTag], attr))
         return tagArr[eachTag]
         // return tagArr
@@ -44,31 +45,22 @@ class ResultBuilder {
     return null
   }
 
-  /*getTag(json, searchTag, searchAttr, filePath) {
-    function traverse(obj, tag, attr, attrVal) {
-      if (obj === '') return
-      // pending ********* do more conditions here ********
-      if (obj[tag] !== undefined && obj[tag]['$'][attr].includes(path.basename(filePath))) {
-        return obj[tag]
-      }
-      else {
-        for (let i in obj) {
-          if (obj.hasOwnProperty(i) && typeof obj[i] === 'object') {
-            let result = traverse(obj[i], tag, attr, attrVal)
-            if (result !== null)
-              return result
-          }
-        }
-        return null
+  getTag(json, tag) {
+    let tagArr = this.getValue(json, tag)
+    console.log(tagArr)
+    // tagArr[eachTag]['$'][attr]
+    for (let eachTag in tagArr) {
+      if (typeof this.getValue(tagArr[eachTag]) !== 'undefined') {
+        return tagArr[eachTag]
+        // return tagArr
       }
     }
+    return null
+  }
 
-    return traverse(json, searchTag, searchAttr, filePath)
-  }*/
-
-  loadResult2Json(dirPath, callback) {
+  loadResult2Json(resultFilePath, callback) {
     var parser = new xml2js.Parser()
-    let data = fs.readFileSync(this.createResultFilePath(dirPath))
+    let data = fs.readFileSync(resultFilePath)
 
     parser.parseString(data, (err, result) => {
       if (err) {
@@ -82,8 +74,8 @@ class ResultBuilder {
     })
   }
 
-  createRootNode(dirPath) {
-    if (fs.existsSync(this.createResultFilePath(dirPath))) return
+  createRootNode(resultFilePath) {
+    if (fs.existsSync(resultFilePath)) return
 
     let xmlbuilder = require('xmlbuilder')
     let root = xmlbuilder.create('Parser', { encoding: 'UTF-8' }).dec('1.0', 'UTF-8')
@@ -96,10 +88,10 @@ class ResultBuilder {
       {
         'AppearsInGroups': 'Messengers',
         'Caption': '',
-        'name': path.basename(dirPath)
+        'name': path.basename(resultFilePath)
       }).end({ pretty: true })
 
-    fs.writeFileSync(this.createResultFilePath(dirPath), root.toString())
+    fs.writeFileSync(this.createResultFilePath(resultFilePath), root.toString())
   }
 
   // createApplicationNode(json, appName) {
@@ -125,10 +117,15 @@ class ResultBuilder {
     return path.resolve(path.dirname(dirPath), path.basename(dirPath) + '.xml')
   }
 
-  createOutputXML(dirPath, callback) {
-    this.createRootNode(dirPath)
-    this.loadResult2Json(dirPath, callback)
+  createOutputXML(resultFilePath, callback) {
+    this.createRootNode(resultFilePath)
+    this.loadResult2Json(resultFilePath, callback)
     // console.log(this.createResultFilePath)
+  }
+
+  getSelectedKeys(tagNode) {
+    let fields = this.getValue(tagNode, 'Field')
+    return fields
   }
 
   hasKey(tagNode, val) {
@@ -138,6 +135,74 @@ class ResultBuilder {
       if (fields[i]['_'] === val) return true
     }
     return false
+  }
+
+  removeFromXmlTag(json, dirPath, filePath, fieldRename) {
+    /*let dirPath = row.dirPath
+    let filePath = row.filePath
+    let tagFilePath = resultBuilder.createTagFilePath(dirPath, filePath)
+    let fieldRename = row.children[0].innerHTML
+    let fieldName = row.children[1].innerHTML
+    let tagNode = resultBuilder.getTag(json, 'XML', 'File', tagFilePath)
+    let xmlNode = resultBuilder.getTag(json, 'XML', 'File', tagFilePath)
+    let target = resultBuilder.getTag(xmlNode, 'Field', '_', fieldName)
+    console.log(target)*/
+  }
+
+  isFieldExist(json, fileType, tagFilePath, fieldName) {
+    let fields = resultBuilder.getValue(json, 'Field')
+    if (fields === null) return false
+    if (fields.length === 1) return resultBuilder.getValue(fields, '_') === fieldName
+
+    for (let field in fields) {
+      if (resultBuilder.getValue(fields[field], '_') === fieldName) return true
+    }
+    return false
+  }
+
+  addField(json, dest, fileType, tagFilePath, fieldRename, fieldName) {
+    let tagNode = resultBuilder.getTagByAttr(json, fileType, 'File', tagFilePath)
+    if (tagNode === null) {
+      // let applicationName = path.basename(dirPath)
+      this.createXmlTagNode(json, tagFilePath)
+    }
+
+    if (!this.isFieldExist(tagNode, fileType, tagFilePath, fieldName)) {
+      if (typeof tagNode['Field'] === 'undefined') {
+        tagNode['Field'] = []
+      }
+
+      tagNode['Field'].push({
+        '$': {
+          'Name': fieldRename
+        },
+        '_': fieldName
+      })
+
+      let builder = new xml2js.Builder()
+      let xml = builder.buildObject(json)
+      fs.writeFileSync(dest, xml)
+
+      // resultBuilder.writeResult2File(json, dirPath)
+    }
+  }
+
+  createXmlTagNode(json, tagFilePath) {
+    // let appTagNode = resultBuilder.getTag(json, 'Application', 'name', applicationName)
+    let appTagNode = resultBuilder.getTag(json, 'Application')
+    if (appTagNode === null) return
+    if (typeof appTagNode['XML'] === 'undefined') {
+      appTagNode['XML'] = []
+      let prop = {
+        '$': {
+          'Name': applicationName,
+          'File': tagFilePath
+        },
+        '_': ''
+      }
+      appTagNode['XML'].push(prop)
+    }
+
   }
 
   writeResult2File(json, dirPath) {

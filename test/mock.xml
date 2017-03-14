@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Parser version="1.0" Name="Parser" Namespace="Susteen.Core.AppData" Device="" icon="">
+  <Application AppearsInGroups="Messengers" Caption="" name="test">
+    <XML Name="me.lyft.android" File="%container%\\accountSecurityStorage.xml">
+      <Field Name="requestedRestore">requestedRestore</Field>
+      <Field Name="test">/map/test</Field>
+    </XML>
+  </Application>
+</Parser>

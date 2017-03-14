@@ -33,14 +33,20 @@ export class FileContentTable {
   rowSelect(event) {
     if (event.target.parentNode.className !== 'selected-row') {
       event.target.parentNode.className = 'processing-row'
-      let dirPath = event.target.parentNode.dirPath
-      resultBuilder.loadResult2Json(dirPath, (json) => {
-        if (event.target.parentNode.fileType === 'xml') {
-          let row = event.target.parentNode
-          xmlManager.add2XmlTag(json, row)
-          console.log(json)
-        }
-      })
+      let row = event.target.parentNode
+      let dirPath = row.dirPath
+      let dest = resultBuilder.createResultFilePath(dirPath)
+      resultBuilder.loadResult2Json(dest,
+        (json) => {
+          if (event.target.parentNode.fileType === 'xml') {
+            let filePath = row.filePath
+            let tagFilePath = resultBuilder.createTagFilePath(dirPath, filePath)
+            let fieldRename = row.children[0].innerHTML
+            let fieldName = row.children[1].innerHTML
+            resultBuilder.addField(json, dest, tagFilePath, fieldRename, fieldName)
+            // console.log(json)
+          }
+        })
       event.target.parentNode.className = 'selected-row'
     } else if (event.target.parentNode.className === 'processing-row') {
       // do nothing, it's processing
@@ -104,16 +110,19 @@ export class FileContentTable {
       xmlManager.readXML(filePath, (entries) => {
         this.display(dirPath, fileType, filePath, entries)
         // read resultXML to get selected fields
-        resultBuilder.loadResult2Json(dirPath, (json) => {
-          console.log(json)
-          let tagFilePath = resultBuilder.createTagFilePath(dirPath, filePath)
-          let tagNode = resultBuilder.getTag(json, 'XML', 'File', tagFilePath)
-          if (tagNode === null) return
 
-          let fields = resultBuilder.getValue(tagNode, 'Field')
-          console.log(fields)
-          // this.display(dirPath, fileType, filePath, entries, selectedKeys)
-        })
+        resultBuilder.loadResult2Json(resultBuilder.createResultFilePath(dirPath),
+          (json) => {
+            console.log(json)
+            let tagFilePath = resultBuilder.createTagFilePath(dirPath, filePath)
+            let tagNode = resultBuilder.getTag(json, 'XML', 'File', tagFilePath)
+            if (tagNode === null) return
+
+            // return a list of selected key
+            // let selectedKeys = 
+            // console.log(selectedKeys)
+            // this.display(dirPath, fileType, filePath, entries, selectedKeys)
+          })
       })
 
 

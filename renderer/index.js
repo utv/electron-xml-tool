@@ -5,9 +5,10 @@ import { FileListSelect } from './components/file-list'
 import { DirChooser } from './components/dir-chooser'
 import { FileContentTable } from './components/file-content'
 import { resultBuilder } from './utils/result'
+import { runTest } from '../test/hello'
 import path from 'path'
 
-
+runTest()
 // components
 let dirChooser = new DirChooser()
 let appNameInput = document.getElementById('app-name')
@@ -23,9 +24,9 @@ dirChooser.onClick(() => {
     fileListSelect.clear()
     fileContentTable.clear()
     // clearFileDetail()
+    let dir = filePaths[0]
 
-
-    resultBuilder.createOutputXML(filePaths[0], (result) => {
+    resultBuilder.createOutputXML(resultBuilder.createResultFilePath(dir), (result) => {
       dirChooser.dirPath = filePaths[0]
       dirChooser.displayDirText.innerHTML = path.basename(filePaths[0])
       fileTypeSelect.populate()
