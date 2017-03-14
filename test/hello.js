@@ -11,10 +11,19 @@ export function runTest() {
     console.log(`dest = ${dest}`)
     console.log(`filePath = ${filePath}`)
     console.log(`tagFilePath = ${tagFilePath}`)
-    // console.log(resultBuilder.isFieldExist(json, 'XML', tagFilePath, 'requestedRestore'))
-    // console.log(resultBuilder.isFieldExist(json, 'XML', tagFilePath, 'test'))
+
     resultBuilder.addField(json, dest, fileType, tagFilePath, 'test', '/map/test')
 
+    let appTag = resultBuilder.getTagByAttr(json, fileType, 'File', tagFilePath)
+    let fields = resultBuilder.getValue(appTag, 'Field')
+
+    let fieldNames = []
+    if (typeof fields !== 'undefined' && fields.length > 0) {
+      for (let field in fields) {
+        fieldNames.push(resultBuilder.getValue(fields[field], '_'))
+      }
+    }
+    console.log(fieldNames)
     // let appTagNode = resultBuilder.getTag(json, 'Application', 'name', path.basename(__dirname))
     // let fields = resultBuilder.getValue(appTagNode, 'Field')
     // if (fields.length > 1) {

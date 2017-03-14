@@ -152,7 +152,7 @@ class ResultBuilder {
   isFieldExist(json, fileType, tagFilePath, fieldName) {
     let fields = resultBuilder.getValue(json, 'Field')
     if (fields === null) return false
-    if (fields.length === 1) return resultBuilder.getValue(fields, '_') === fieldName
+    // if (fields.length === 1) return resultBuilder.getValue(fields, '_') === fieldName
 
     for (let field in fields) {
       if (resultBuilder.getValue(fields[field], '_') === fieldName) return true
@@ -184,6 +184,8 @@ class ResultBuilder {
       fs.writeFileSync(dest, xml)
 
       // resultBuilder.writeResult2File(json, dirPath)
+    } else {
+      console.log('this field exists')
     }
   }
 
