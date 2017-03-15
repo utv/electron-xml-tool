@@ -4,6 +4,7 @@
     <XML Name="me.lyft.android" File="%container%\\accountSecurityStorage.xml">
       <Field Name="requestedRestore">requestedRestore</Field>
       <Field Name="test">/map/test</Field>
+      <Field Name="Device Id">device_id</Field>
     </XML>
   </Application>
 </Parser>

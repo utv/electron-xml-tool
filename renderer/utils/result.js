@@ -91,7 +91,7 @@ class ResultBuilder {
         'name': path.basename(resultFilePath)
       }).end({ pretty: true })
 
-    fs.writeFileSync(this.createResultFile(resultFilePath), root.toString())
+    fs.writeFileSync(this.createResultFilePath(resultFilePath), root.toString())
   }
 
   // createApplicationNode(json, appName) {
@@ -116,7 +116,7 @@ class ResultBuilder {
     return '%container%' + relativePath.replace(/\//g, '\\\\')
   }
 
-  createResultFile(dirPath) {
+  createResultFilePath(dirPath) {
     return path.resolve(path.dirname(dirPath), path.basename(dirPath) + '.xml')
   }
 
@@ -128,7 +128,7 @@ class ResultBuilder {
 
   getSelectedKeys(json, fileType, tagFilePath) {
     let tagNode = resultBuilder.getTagByAttr(json, fileType, 'File', tagFilePath)
-    if (tagNode === null) return
+    if (tagNode === null) return null
 
     let fields = this.getValue(tagNode, 'Field')
     let selectedKeys = []
@@ -160,7 +160,10 @@ class ResultBuilder {
   }
 
   isFieldExist(json, fileType, tagFilePath, fieldName) {
-    let fields = resultBuilder.getValue(json, 'Field')
+    let tag = resultBuilder.getTagByAttr(json, fileType, 'File', tagFilePath)
+    if (tag === null) return false
+
+    let fields = resultBuilder.getValue(tag, 'Field')
     if (fields === null) return false
     // if (fields.length === 1) return resultBuilder.getValue(fields, '_') === fieldName
 
@@ -177,12 +180,13 @@ class ResultBuilder {
       this.createXmlTagNode(json, tagFilePath)
     }
 
-    if (!this.isFieldExist(tagNode, fileType, tagFilePath, fieldName)) {
-      if (typeof tagNode['Field'] === 'undefined') {
-        tagNode['Field'] = []
+    if (!this.isFieldExist(json, fileType, tagFilePath, fieldName)) {
+      let tag = resultBuilder.getTagByAttr(json, fileType, 'File', tagFilePath)
+      let fields = resultBuilder.getValue(tag, 'Field')
+      if (fields === null) {
+        fields = this.createFieldTagNode(json, fileType, tagFilePath)
       }
-
-      tagNode['Field'].push({
+      fields.push({
         '$': {
           'Name': fieldRename
         },
@@ -192,35 +196,37 @@ class ResultBuilder {
       let builder = new xml2js.Builder()
       let xml = builder.buildObject(json)
       fs.writeFileSync(resultFile, xml)
-
       // resultBuilder.writeResult2File(json, dirPath)
     } else {
       console.log('this field exists')
     }
   }
 
+  createFieldTagNode(json, fileType, tagFilePath) {
+    // let appTagNode = resultBuilder.getTag(json, 'Application', 'name', applicationName)
+    let xmlTagNode = resultBuilder.getTagByAttr(json, fileType, 'File', tagFilePath)
+    xmlTagNode['Field'] = []
+    return xmlTagNode['Field']
+  }
+
   createXmlTagNode(json, tagFilePath) {
     // let appTagNode = resultBuilder.getTag(json, 'Application', 'name', applicationName)
     let appTagNode = resultBuilder.getTag(json, 'Application')
-    if (appTagNode === null) return
-    if (typeof appTagNode['XML'] === 'undefined') {
-      appTagNode['XML'] = []
-      let prop = {
-        '$': {
-          'Name': applicationName,
-          'File': tagFilePath
-        },
-        '_': ''
-      }
-      appTagNode['XML'].push(prop)
+    appTagNode['XML'] = []
+    let prop = {
+      '$': {
+        'Name': '',
+        'File': tagFilePath
+      },
+      '_': ''
     }
-
+    appTagNode['XML'].push(prop)
   }
 
   writeResult2File(json, dirPath) {
     let builder = new xml2js.Builder()
     let xml = builder.buildObject(json)
-    fs.writeFileSync(resultBuilder.createResultFile(dirPath), xml)
+    fs.writeFileSync(resultBuilder.createResultFilePath(dirPath), xml)
   }
 }
 export let resultBuilder = new ResultBuilder()

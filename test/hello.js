@@ -37,6 +37,9 @@ export function testUI() {
   let tagFilePath = resultBuilder.createTagFilePath(__dirname, filePath)
 
   let content = new FileContentTable()
+  resultBuilder.loadResult2Json(resultFile, (json) => {
+    resultBuilder.addField(json, resultFile, fileType, tagFilePath, 'Device Id', 'device_id')
+  })
   xmlManager.readXML(filePath, (entries) => {
     content.highlightRows(resultFile, fileType, tagFilePath, entries)
   })

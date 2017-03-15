@@ -5,7 +5,7 @@ class FileTypeSelect {
   constructor() {
     this.select = document.getElementsByClassName('file-type')[0]
     this.selectedFileType = ''
-    this.fileTypes = ['Select One', 'xml', 'json', 'sql']
+    this.fileTypes = ['Select One', 'XML', 'PList', 'Json']
   }
 
   clear() {
