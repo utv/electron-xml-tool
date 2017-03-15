@@ -1,18 +1,20 @@
 
 import path from 'path'
 import { resultBuilder } from '../renderer/utils/result'
+import { FileContentTable } from '../renderer/components/file-content'
+import { xmlManager } from '../renderer/utils/xml'
 
 export function runTest() {
-  let dest = path.resolve(__dirname, 'mock.xml')
-  resultBuilder.loadResult2Json(dest, (json) => {
+  let resultFile = path.resolve(__dirname, 'mock.xml')
+  resultBuilder.loadResult2Json(resultFile, (json) => {
     let fileType = 'XML'
     let filePath = path.resolve(__dirname, 'accountSecurityStorage.xml')
     let tagFilePath = resultBuilder.createTagFilePath(__dirname, filePath)
-    console.log(`dest = ${dest}`)
+    console.log(`resultFile = ${resultFile}`)
     console.log(`filePath = ${filePath}`)
     console.log(`tagFilePath = ${tagFilePath}`)
 
-    resultBuilder.addField(json, dest, fileType, tagFilePath, 'test', '/map/test')
+    resultBuilder.addField(json, resultFile, fileType, tagFilePath, 'test', '/map/test')
 
     let appTag = resultBuilder.getTagByAttr(json, fileType, 'File', tagFilePath)
     let fields = resultBuilder.getValue(appTag, 'Field')
@@ -24,17 +26,18 @@ export function runTest() {
       }
     }
     console.log(fieldNames)
-    // let appTagNode = resultBuilder.getTag(json, 'Application', 'name', path.basename(__dirname))
-    // let fields = resultBuilder.getValue(appTagNode, 'Field')
-    // if (fields.length > 1) {
-    //   for (let field in fields) {
-    //     console.log(resultBuilder.getValue(field, '_'))
-    //   }
-    // } else {
-    //   console.log(resultBuilder.getValue(fields, '_'))
-    // }
-
-
   })
 }
 
+export function testUI() {
+  let resultFile = path.resolve(__dirname, 'mock.xml')
+  let fileType = 'XML'
+  let filePath = path.resolve(__dirname, 'accountSecurityStorage.xml')
+  // let filePath = path.resolve(__dirname, 'mock.xml')
+  let tagFilePath = resultBuilder.createTagFilePath(__dirname, filePath)
+
+  let content = new FileContentTable()
+  xmlManager.readXML(filePath, (entries) => {
+    content.highlightRows(resultFile, fileType, tagFilePath, entries)
+  })
+}

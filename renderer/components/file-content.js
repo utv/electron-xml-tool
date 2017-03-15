@@ -12,6 +12,7 @@ export class FileContentTable {
     this.body = document.getElementById('content')
     // this.status = document.getElementById('status')
     this.rows = []
+    this.entries = []
   }
 
   clear() {
@@ -33,21 +34,22 @@ export class FileContentTable {
   rowSelect(event) {
     if (event.target.parentNode.className !== 'selected-row') {
       event.target.parentNode.className = 'processing-row'
+      // let dirPath = row.dirPath
       let row = event.target.parentNode
-      let dirPath = row.dirPath
-      let dest = resultBuilder.createResultFilePath(dirPath)
-      resultBuilder.loadResult2Json(dest,
+      let resultFile = row.resultFile
+      resultBuilder.loadResult2Json(resultFile,
         (json) => {
-          if (event.target.parentNode.fileType === 'xml') {
-            let filePath = row.filePath
-            let tagFilePath = resultBuilder.createTagFilePath(dirPath, filePath)
+          if (event.target.parentNode.fileType === 'XML') {
+            let fileType = event.target.parentNode.fileType
+            let tagFilePath = row.tagFilePath
             let fieldRename = row.children[0].innerHTML
-            let fieldName = row.children[1].innerHTML
-            resultBuilder.addField(json, dest, tagFilePath, fieldRename, fieldName)
-            // console.log(json)
+            let selectedFieldName = row.children[1].innerHTML
+            resultBuilder.addField(json, resultFile, tagFilePath, fieldRename, selectedFieldName)
+            this.highlightRows(resultFile, fileType, tagFilePath, this.entries)
           }
+          event.target.parentNode.className = 'selected-row'
         })
-      event.target.parentNode.className = 'selected-row'
+
     } else if (event.target.parentNode.className === 'processing-row') {
       // do nothing, it's processing
     }
@@ -67,17 +69,19 @@ export class FileContentTable {
 
   }
 
-  // entries = obj['map']['string'][i]['$']
-  display(dirPath, fileType, filePath, entries) {
+  // display(dirPath, fileType, filePath, entries) {
+  display(resultFile, fileType, tagFilePath, entries) {
     let tbody = this.body
     // render row and columns
     // entries = [ {rename, name, value} ]
 
     for (let entry in entries) {
       let row = document.createElement('tr')
-      row.dirPath = dirPath
+      // row.dirPath = dirPath
+      // row.filePath = filePath
+      row.resultFile = resultFile
       row.fileType = fileType
-      row.filePath = filePath
+      row.tagFilePath = tagFilePath
 
       for (let key in entries[entry]) {
         let td = document.createElement('td')
@@ -96,6 +100,24 @@ export class FileContentTable {
     this.tableHead.insertAdjacentElement('afterend', tbody)
   }
 
+  highlightRows(resultFile, fileType, tagFilePath, entries, selectedKeys) {
+    // get a list of selected field
+    resultBuilder.loadResult2Json(resultFile,
+      (json) => {
+        let tbody = this.body
+        let selectedKeys = resultBuilder.getSelectedKeys(json, fileType, tagFilePath)
+        console.log(selectedKeys)
+        // entries = [ {rename, name, value} ]
+        console.log('highlighted')
+        for (let entry in entries) {
+          let key = entries[entry]['name']
+          if (selectedKeys.indexOf(key) !== -1) {
+            console.log(key)
+          }
+        }
+      })
+  }
+
   populate(dirPath, fileType, filePath) {
     if (fileType === undefined || filePath === undefined)
       return
@@ -108,24 +130,13 @@ export class FileContentTable {
     // read android xml file and display it
     if (fileType === 'xml') {
       xmlManager.readXML(filePath, (entries) => {
-        this.display(dirPath, fileType, filePath, entries)
-        // read resultXML to get selected fields
-
-        resultBuilder.loadResult2Json(resultBuilder.createResultFilePath(dirPath),
-          (json) => {
-            console.log(json)
-            let tagFilePath = resultBuilder.createTagFilePath(dirPath, filePath)
-            let tagNode = resultBuilder.getTag(json, 'XML', 'File', tagFilePath)
-            if (tagNode === null) return
-
-            // return a list of selected key
-            // let selectedKeys = 
-            // console.log(selectedKeys)
-            // this.display(dirPath, fileType, filePath, entries, selectedKeys)
-          })
+        this.entries = entries
+        let tagFilePath = resultBuilder.createTagFilePath(dirPath, filePath)
+        let resultFile = resultBuilder.createResultFilePath(dirPath)
+        this.display(resultFile, fileType, tagFilePath, entries)
+        // entries = [ {rename, name, value} ]
+        this.highlightRows(resultFile, fileType, tagFilePath, entries)
       })
-
-
     }
   }
 

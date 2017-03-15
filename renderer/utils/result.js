@@ -91,7 +91,7 @@ class ResultBuilder {
         'name': path.basename(resultFilePath)
       }).end({ pretty: true })
 
-    fs.writeFileSync(this.createResultFilePath(resultFilePath), root.toString())
+    fs.writeFileSync(this.createResultFile(resultFilePath), root.toString())
   }
 
   // createApplicationNode(json, appName) {
@@ -110,10 +110,13 @@ class ResultBuilder {
   createTagFilePath(dirPath, filePath) {
     let dir = path.basename(dirPath)
     let relativePath = filePath.substring(filePath.lastIndexOf(dir) + dir.length, filePath.length)
-    return '%container%' + relativePath.replace(/\\/g, '\\\\')
+    let process = require('process')
+    if (process.platform.match(/^win/))
+      return '%container%' + relativePath.replace(/\\/g, '\\\\')
+    return '%container%' + relativePath.replace(/\//g, '\\\\')
   }
 
-  createResultFilePath(dirPath) {
+  createResultFile(dirPath) {
     return path.resolve(path.dirname(dirPath), path.basename(dirPath) + '.xml')
   }
 
@@ -123,9 +126,16 @@ class ResultBuilder {
     // console.log(this.createResultFilePath)
   }
 
-  getSelectedKeys(tagNode) {
+  getSelectedKeys(json, fileType, tagFilePath) {
+    let tagNode = resultBuilder.getTagByAttr(json, fileType, 'File', tagFilePath)
+    if (tagNode === null) return
+
     let fields = this.getValue(tagNode, 'Field')
-    return fields
+    let selectedKeys = []
+    for (let field in fields) {
+      selectedKeys.push(this.getValue(fields[field], '_'))
+    }
+    return selectedKeys
   }
 
   hasKey(tagNode, val) {
@@ -160,7 +170,7 @@ class ResultBuilder {
     return false
   }
 
-  addField(json, dest, fileType, tagFilePath, fieldRename, fieldName) {
+  addField(json, resultFile, fileType, tagFilePath, fieldRename, fieldName) {
     let tagNode = resultBuilder.getTagByAttr(json, fileType, 'File', tagFilePath)
     if (tagNode === null) {
       // let applicationName = path.basename(dirPath)
@@ -181,7 +191,7 @@ class ResultBuilder {
 
       let builder = new xml2js.Builder()
       let xml = builder.buildObject(json)
-      fs.writeFileSync(dest, xml)
+      fs.writeFileSync(resultFile, xml)
 
       // resultBuilder.writeResult2File(json, dirPath)
     } else {
@@ -210,7 +220,7 @@ class ResultBuilder {
   writeResult2File(json, dirPath) {
     let builder = new xml2js.Builder()
     let xml = builder.buildObject(json)
-    fs.writeFileSync(resultBuilder.createResultFilePath(dirPath), xml)
+    fs.writeFileSync(resultBuilder.createResultFile(dirPath), xml)
   }
 }
 export let resultBuilder = new ResultBuilder()

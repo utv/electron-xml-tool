@@ -5,10 +5,11 @@ import { FileListSelect } from './components/file-list'
 import { DirChooser } from './components/dir-chooser'
 import { FileContentTable } from './components/file-content'
 import { resultBuilder } from './utils/result'
-import { runTest } from '../test/hello'
+import { runTest, testUI } from '../test/hello'
 import path from 'path'
 
 runTest()
+testUI()
 // components
 let dirChooser = new DirChooser()
 let appNameInput = document.getElementById('app-name')
