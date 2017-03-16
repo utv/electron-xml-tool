@@ -91,7 +91,7 @@ class ResultBuilder {
         'name': path.basename(resultFilePath)
       }).end({ pretty: true })
 
-    fs.writeFileSync(this.createResultFilePath(resultFilePath), root.toString())
+    fs.writeFileSync(resultFilePath, root.toString())
   }
 
   // createApplicationNode(json, appName) {
@@ -117,10 +117,10 @@ class ResultBuilder {
   }
 
   createResultFilePath(dirPath) {
-    return path.resolve(path.dirname(dirPath), path.basename(dirPath) + '.xml')
+    return path.join(path.dirname(dirPath), path.basename(dirPath) + '.xml')
   }
 
-  createOutputXML(resultFilePath, callback) {
+  createResult(resultFilePath, callback) {
     this.createRootNode(resultFilePath)
     this.loadResult2Json(resultFilePath, callback)
     // console.log(this.createResultFilePath)

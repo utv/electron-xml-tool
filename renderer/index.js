@@ -27,7 +27,7 @@ dirChooser.onClick(() => {
     // clearFileDetail()
     let dir = filePaths[0]
 
-    resultBuilder.createOutputXML(resultBuilder.createResultFilePath(dir), (result) => {
+    resultBuilder.createResult(resultBuilder.createResultFilePath(dir), (result) => {
       dirChooser.dirPath = filePaths[0]
       dirChooser.displayDirText.innerHTML = path.basename(filePaths[0])
       fileTypeSelect.populate()
