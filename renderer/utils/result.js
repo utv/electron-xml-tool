@@ -203,19 +203,33 @@ class ResultBuilder {
   }
 
   createFieldTagNode(json, fileType, tagFilePath) {
-    // let appTagNode = resultBuilder.getTag(json, 'Application', 'name', applicationName)
-    let xmlTagNode = resultBuilder.getTagByAttr(json, fileType, 'File', tagFilePath)
+    let xmlTagNode = this.getTagByAttr(json, fileType, 'File', tagFilePath)
     xmlTagNode['Field'] = []
     return xmlTagNode['Field']
   }
 
+  adjustName(fileName) {
+    return fileName
+  }
+
+  createAppName(tagFilePath) {
+    let basename = tagFilePath.substring(tagFilePath.lastIndexOf('\\\\'), tagFilePath.length)
+    let lastDotPos = 'ds'.lastIndexOf('.')
+    let fileName = ''
+    if (lastDotPos !== -1) {
+      fileName = basename.substring(0, lastDotPos)
+      return this.adjustName(fileName)
+    }
+    return ''
+  }
+
   createXmlTagNode(json, tagFilePath) {
-    // let appTagNode = resultBuilder.getTag(json, 'Application', 'name', applicationName)
-    let appTagNode = resultBuilder.getTag(json, 'Application')
+    let appTagNode = this.getTag(json, 'Application')
+    let appName = this.createAppName(tagFilePath)
     appTagNode['XML'] = []
     let prop = {
       '$': {
-        'Name': '',
+        'Name': appName,
         'File': tagFilePath
       },
       '_': ''
@@ -226,7 +240,7 @@ class ResultBuilder {
   writeResult2File(json, dirPath) {
     let builder = new xml2js.Builder()
     let xml = builder.buildObject(json)
-    fs.writeFileSync(resultBuilder.createResultFilePath(dirPath), xml)
+    fs.writeFileSync(this.createResultFilePath(dirPath), xml)
   }
 }
 export let resultBuilder = new ResultBuilder()

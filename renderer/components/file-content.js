@@ -37,7 +37,6 @@ export class FileContentTable {
       // let dirPath = row.dirPath
       let row = event.target.parentNode
       let resultFile = row.resultFile
-      let entries = this.entries
 
       resultBuilder.loadResult2Json(resultFile,
         (json) => {
@@ -47,7 +46,7 @@ export class FileContentTable {
             let fieldRename = row.children[0].innerHTML
             let selectedFieldName = row.children[1].innerHTML
             resultBuilder.addField(json, resultFile, fileType, tagFilePath, fieldRename, selectedFieldName)
-            row.highlightRows(resultFile, fileType, tagFilePath, entries)
+            row.highlightRows(resultFile, fileType, tagFilePath)
           }
           // event.target.parentNode.className = 'selected-row'
         })
@@ -104,20 +103,11 @@ export class FileContentTable {
     this.tableHead.insertAdjacentElement('afterend', tbody)
   }
 
-  highlightRows(resultFile, fileType, tagFilePath, entries) {
+  highlightRows(resultFile, fileType, tagFilePath) {
     // get a list of selected field
     resultBuilder.loadResult2Json(resultFile, (json) => {
       let selectedKeys = resultBuilder.getSelectedKeys(json, fileType, tagFilePath)
       if (selectedKeys === null) return
-
-      // entries = [ {rename, name, value} ]
-      console.log('highlighted')
-      for (let entry in entries) {
-        let key = entries[entry]['name']
-        if (selectedKeys.indexOf(key) !== -1) {
-          console.log(key)
-        }
-      }
 
       let content = document.getElementById('content')
       if (content.childElementCount > 0) {
@@ -143,14 +133,13 @@ export class FileContentTable {
     // if a output node for this file is not created,
     // read android xml file and display it
     if (fileType === 'XML') {
-      let self = this
       xmlManager.readXML(filePath, (entries) => {
         this.entries = entries
         let tagFilePath = resultBuilder.createTagFilePath(dirPath, filePath)
         let resultFile = resultBuilder.createResultFilePath(dirPath)
-        self.display(resultFile, fileType, tagFilePath, entries)
+        this.display(resultFile, fileType, tagFilePath, entries)
         // entries = [ {rename, name, value} ]
-        self.highlightRows(resultFile, fileType, tagFilePath, entries)
+        this.highlightRows(resultFile, fileType, tagFilePath)
       })
     }
   }
