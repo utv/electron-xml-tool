@@ -22,7 +22,8 @@ export class FileContentTable {
       })
     }
 
-    this.tableHead.style.display = 'none'
+    this.table.style.display = 'none'
+    // this.tableHead.style.display = 'none'
     let body = this.body
     if (body.firstChild) {
       while (body.firstChild) {
@@ -128,7 +129,8 @@ export class FileContentTable {
 
     // invisible table head
     this.clear()
-    this.tableHead.style.display = 'block'
+    this.table.style.display = 'block'
+    // this.tableHead.style.display = 'block'
 
     // if a output node for this file is not created,
     // read android xml file and display it

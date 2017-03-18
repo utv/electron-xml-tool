@@ -91,7 +91,7 @@ class ResultBuilder {
         'name': path.basename(resultFilePath)
       }).end({ pretty: true })
 
-    fs.writeFileSync(this.createResultFilePath(resultFilePath), root.toString())
+    fs.writeFileSync(resultFilePath, root.toString())
   }
 
   // createApplicationNode(json, appName) {
