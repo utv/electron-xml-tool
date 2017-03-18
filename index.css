@@ -2,13 +2,17 @@
   border: dotted
 }
 
+.file-content {
+  display: none
+}
+
 .result-panel {
   border: lightseagreen
 }
 
-#table-head {
+/*#table-head {
   display: none
-}
+}*/
 
 .processing-row {
   background-color: lightcoral
