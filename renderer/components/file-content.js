@@ -47,9 +47,8 @@ export class FileContentTable {
             let fieldRename = row.children[0].innerHTML
             let selectedFieldName = row.children[1].innerHTML
             resultBuilder.addField(json, resultFile, fileType, tagFilePath, fieldRename, selectedFieldName)
-            row.highlightRows(resultFile, fileType, tagFilePath)
+            row.highlightRows(resultFile, fileType, tagFilePath, true)
           }
-          // event.target.parentNode.className = 'selected-row'
         })
 
     } else if (event.target.parentNode.className === 'processing-row') {
@@ -57,18 +56,22 @@ export class FileContentTable {
     }
     else {
       // remove this key from result then update css
-      /*event.target.parentNode.className = 'processing-row'
-      let dirPath = event.target.parentNode.dirPath
-      resultBuilder.loadResult2Json(dirPath, (json) => {
-        if (event.target.parentNode.fileType === 'xml') {
-          let row = event.target.parentNode
-          xmlManager.removeFromXmlTag(json, row)
-          console.log(json)
+      event.target.parentNode.className = 'processing-row'
+      let row = event.target.parentNode
+      let resultFile = row.resultFile
+
+      // let dirPath = event.target.parentNode.dirPath
+      resultBuilder.loadResult2Json(resultFile, (json) => {
+        if (event.target.parentNode.fileType === 'XML') {
+          let fileType = event.target.parentNode.fileType
+          let tagFilePath = row.tagFilePath
+          let fieldRename = row.children[0].innerHTML
+          let selectedFieldName = row.children[1].innerHTML
+          resultBuilder.removeField(json, resultFile, fileType, tagFilePath, selectedFieldName)
+          row.highlightRows(resultFile, fileType, tagFilePath)
         }
       })
-      event.target.parentNode.classList.remove('selected-row')*/
     }
-
   }
 
   // display(dirPath, fileType, filePath, entries) {
@@ -116,8 +119,10 @@ export class FileContentTable {
         for (let i = 0; i < rows.length; i++) {
           let fieldName = rows.item(i).getElementsByClassName('name')[0].innerHTML
           if (selectedKeys.indexOf(fieldName) !== -1) {
-            rows.item(i).className = 'selected-row'
+            rows.item(i).classList.add('selected-row')
           }
+          if (rows.item(i).classList.contains('processing-row'))
+            rows.item(i).classList.remove('processing-row')
         }
       }
     })

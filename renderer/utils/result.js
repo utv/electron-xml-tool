@@ -147,18 +147,6 @@ class ResultBuilder {
     return false
   }
 
-  removeFromXmlTag(json, dirPath, filePath, fieldRename) {
-    /*let dirPath = row.dirPath
-    let filePath = row.filePath
-    let tagFilePath = resultBuilder.createTagFilePath(dirPath, filePath)
-    let fieldRename = row.children[0].innerHTML
-    let fieldName = row.children[1].innerHTML
-    let tagNode = resultBuilder.getTag(json, 'XML', 'File', tagFilePath)
-    let xmlNode = resultBuilder.getTag(json, 'XML', 'File', tagFilePath)
-    let target = resultBuilder.getTag(xmlNode, 'Field', '_', fieldName)
-    console.log(target)*/
-  }
-
   isFieldExist(json, fileType, tagFilePath, fieldName) {
     let tag = resultBuilder.getTagByAttr(json, fileType, 'File', tagFilePath)
     if (tag === null) return false
@@ -173,16 +161,36 @@ class ResultBuilder {
     return false
   }
 
+  writeXml2File(json, resultFile) {
+    let builder = new xml2js.Builder()
+    let xml = builder.buildObject(json)
+    fs.writeFileSync(resultFile, xml)
+  }
+
+  removeField(json, resultFile, fileType, tagFilePath, selectedFieldName) {
+    let tagNode = this.getTagByAttr(json, fileType, 'File', tagFilePath)
+    let fields = this.getValue(tagNode, 'Field')
+    for (let field in fields) {
+      if (this.getValue(fields[field], '_') === selectedFieldName) {
+        console.log(fields[field])
+        delete fields[field]
+        this.writeXml2File(json, resultFile)
+        return
+      }
+    }
+
+  }
+
   addField(json, resultFile, fileType, tagFilePath, fieldRename, fieldName) {
-    let tagNode = resultBuilder.getTagByAttr(json, fileType, 'File', tagFilePath)
+    let tagNode = this.getTagByAttr(json, fileType, 'File', tagFilePath)
     if (tagNode === null) {
       // let applicationName = path.basename(dirPath)
       this.createXmlTagNode(json, tagFilePath)
     }
 
     if (!this.isFieldExist(json, fileType, tagFilePath, fieldName)) {
-      let tag = resultBuilder.getTagByAttr(json, fileType, 'File', tagFilePath)
-      let fields = resultBuilder.getValue(tag, 'Field')
+      let tag = this.getTagByAttr(json, fileType, 'File', tagFilePath)
+      let fields = this.getValue(tag, 'Field')
       if (fields === null) {
         fields = this.createFieldTagNode(json, fileType, tagFilePath)
       }
@@ -193,9 +201,7 @@ class ResultBuilder {
         '_': fieldName
       })
 
-      let builder = new xml2js.Builder()
-      let xml = builder.buildObject(json)
-      fs.writeFileSync(resultFile, xml)
+      this.writeXml2File(json, resultFile)
       // resultBuilder.writeResult2File(json, dirPath)
     } else {
       console.log('this field exists')
@@ -237,10 +243,10 @@ class ResultBuilder {
     appTagNode['XML'].push(prop)
   }
 
-  writeResult2File(json, dirPath) {
+  /*writeResult2File(json, dirPath) {
     let builder = new xml2js.Builder()
     let xml = builder.buildObject(json)
     fs.writeFileSync(this.createResultFilePath(dirPath), xml)
-  }
+  }*/
 }
 export let resultBuilder = new ResultBuilder()
